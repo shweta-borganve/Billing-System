@@ -1,4 +1,4 @@
-# Billing System
+# BILLING SYSTEM 
 
 A simple and modular **Billing System** developed using Python. The project manages products, generates bills, stores billing history, and maintains application logs using JSON files.
 
