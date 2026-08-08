@@ -3,7 +3,6 @@ import os
 
 from logger_config import logger
 
-
 DATA_FOLDER = "data"
 PRODUCTS_FILE = os.path.join(DATA_FOLDER, "products.json")
 BILLS_FILE = os.path.join(DATA_FOLDER, "bills.json")
@@ -30,7 +29,7 @@ def load_data(filename):
         logger.error(f"Invalid JSON data in {filename}")
         return []
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         logger.error(f"Error loading {filename}: {e}")
         return []
 
@@ -45,5 +44,5 @@ def save_data(filename, data):
 
         logger.info(f"Data saved successfully to {filename}")
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         logger.error(f"Error saving {filename}: {e}") 

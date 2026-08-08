@@ -1,4 +1,4 @@
-from file_handler import load_data, save_data, PRODUCTS_FILE
+from file_handler import PRODUCTS_FILE, load_data, save_data
 from logger_config import logger
 
 
@@ -17,12 +17,7 @@ def add_product():
                 logger.warning(f"Duplicate product ID: {product_id}")
                 return
 
-        product = {
-            "id": product_id,
-            "name": name,
-            "price": price,
-            "quantity": quantity
-        }
+        product = {"id": product_id, "name": name, "price": price, "quantity": quantity}
 
         products.append(product)
         save_data(PRODUCTS_FILE, products)
@@ -123,4 +118,4 @@ def delete_product():
 
     except ValueError:
         print("Invalid Product ID.")
-        logger.warning("Invalid Product ID entered.") 
+        logger.warning("Invalid Product ID entered.")

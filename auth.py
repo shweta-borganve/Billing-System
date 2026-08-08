@@ -1,6 +1,5 @@
 from logger_config import logger
 
-
 USERNAME = "admin"
 PASSWORD = "1234"
 
@@ -18,4 +17,4 @@ def login():
 
     print("Invalid username or password.")
     logger.warning(f"Failed login attempt for username: {username}")
-    return False 
+    return False

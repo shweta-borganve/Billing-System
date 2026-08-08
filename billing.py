@@ -1,11 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
-from file_handler import (
-    load_data,
-    save_data,
-    PRODUCTS_FILE,
-    BILLS_FILE
-)
+from file_handler import BILLS_FILE, PRODUCTS_FILE, load_data, save_data
 from logger_config import logger
 
 
@@ -44,9 +39,7 @@ def generate_bill():
 
                     if quantity > product["quantity"]:
                         print("Insufficient stock.")
-                        logger.warning(
-                            f"Insufficient stock for product: {product_id}"
-                        )
+                        logger.warning(f"Insufficient stock for product: {product_id}")
                         continue
 
                     amount = product["price"] * quantity
@@ -56,7 +49,7 @@ def generate_bill():
                         "name": product["name"],
                         "price": product["price"],
                         "quantity": quantity,
-                        "amount": amount
+                        "amount": amount,
                     }
 
                     items.append(item)
@@ -81,10 +74,10 @@ def generate_bill():
 
     bill = {
         "bill_id": len(bills) + 1,
-        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "date": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"), 
         "items": items,
-        "total": total
-    }
+        "total": total,
+    } 
 
     bills.append(bill)
 
@@ -96,11 +89,8 @@ def generate_bill():
     print(f"Date: {bill['date']}")
 
     for item in items:
-        print(
-            f"{item['name']} x {item['quantity']} = "
-            f"₹{item['amount']:.2f}"
-        )
+        print(f"{item['name']} x {item['quantity']} = " f"₹{item['amount']:.2f}")
 
     print(f"Total: ₹{total:.2f}")
 
-    logger.info(f"Bill generated successfully: {bill['bill_id']}") 
+    logger.info(f"Bill generated successfully: {bill['bill_id']}")

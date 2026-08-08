@@ -1,7 +1,6 @@
 import logging
 import os
 
-
 LOG_FOLDER = "logs"
 
 if not os.path.exists(LOG_FOLDER):
@@ -11,7 +10,7 @@ if not os.path.exists(LOG_FOLDER):
 logging.basicConfig(
     filename="logs/billing_system.log",
     level=logging.DEBUG,
-    format="%(asctime)s - %(levelname)s - %(message)s"
+    format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
-logger = logging.getLogger(__name__) 
+logger = logging.getLogger(__name__)

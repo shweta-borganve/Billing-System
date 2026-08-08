@@ -1,4 +1,4 @@
-from file_handler import load_data, BILLS_FILE
+from file_handler import BILLS_FILE, load_data
 from logger_config import logger
 
 
@@ -17,9 +17,6 @@ def view_bill_history():
         print(f"Date: {bill['date']}")
 
         for item in bill["items"]:
-            print(
-                f"{item['name']} x {item['quantity']} "
-                f"= ₹{item['amount']:.2f}"
-            )
+            print(f"{item['name']} x {item['quantity']} " f"= ₹{item['amount']:.2f}")
 
-        print(f"Total: ₹{bill['total']:.2f}") 
+        print(f"Total: ₹{bill['total']:.2f}")
