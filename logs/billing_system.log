@@ -1,0 +1,36 @@
+2026-08-08 08:52:20,409 - INFO - Billing System started.
+2026-08-08 08:52:39,957 - INFO - Admin logged in successfully.
+2026-08-08 08:52:50,489 - INFO - Billing System closed.
+2026-08-08 08:53:00,325 - INFO - Billing System started.
+2026-08-08 08:53:04,078 - WARNING - Failed login attempt for username: hgdg
+2026-08-08 08:53:04,080 - WARNING - User failed authentication.
+2026-08-08 08:53:32,002 - INFO - Billing System started.
+2026-08-08 08:53:37,817 - INFO - Admin logged in successfully.
+2026-08-08 08:53:40,075 - INFO - Data loaded successfully from data/products.json
+2026-08-08 08:53:54,574 - INFO - Data saved successfully to data/products.json
+2026-08-08 08:53:54,583 - INFO - Product added: sugar
+2026-08-08 08:54:13,678 - INFO - Data loaded successfully from data/products.json
+2026-08-08 08:54:18,144 - INFO - Data loaded successfully from data/products.json
+2026-08-08 08:54:21,127 - WARNING - Product not found: 102
+2026-08-08 08:54:24,571 - INFO - Data loaded successfully from data/products.json
+2026-08-08 08:54:26,317 - INFO - Product searched: 101
+2026-08-08 08:54:31,979 - INFO - Data loaded successfully from data/products.json
+2026-08-08 08:54:34,031 - WARNING - Product not found for update: 102
+2026-08-08 08:54:37,618 - INFO - Data loaded successfully from data/products.json
+2026-08-08 08:54:49,639 - INFO - Data saved successfully to data/products.json
+2026-08-08 08:54:49,641 - INFO - Product updated: 101
+2026-08-08 08:55:00,115 - INFO - Data loaded successfully from data/products.json
+2026-08-08 08:55:13,534 - INFO - Data saved successfully to data/products.json
+2026-08-08 08:55:13,536 - INFO - Product added: milk
+2026-08-08 08:55:16,690 - INFO - Data loaded successfully from data/products.json
+2026-08-08 08:55:21,260 - INFO - Data loaded successfully from data/products.json
+2026-08-08 08:55:23,642 - WARNING - Product not found for deletion: 104
+2026-08-08 08:55:27,855 - INFO - Data loaded successfully from data/products.json
+2026-08-08 08:55:38,459 - INFO - Data saved successfully to data/products.json
+2026-08-08 08:55:38,461 - INFO - Product deleted: 101
+2026-08-08 08:55:42,666 - INFO - Data loaded successfully from data/products.json
+2026-08-08 08:55:42,683 - INFO - Data loaded successfully from data/bills.json
+2026-08-08 08:55:52,035 - WARNING - Product not found: 101
+2026-08-08 08:55:59,113 - INFO - Data loaded successfully from data/bills.json
+2026-08-08 08:55:59,115 - WARNING - Bill history requested but no bills found.
+2026-08-08 08:56:03,303 - INFO - Billing System closed.
