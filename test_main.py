@@ -13,9 +13,7 @@ class TestBillingSystem(unittest.TestCase):
         main.main()
 
         mock_login.assert_called_once()
-        mock_logger.warning.assert_called_once_with(
-            "User failed authentication."
-        )
+        mock_logger.warning.assert_called_once_with("User failed authentication.")
 
     # Test Add Product
     @patch("main.login", return_value=True)
@@ -75,12 +73,7 @@ class TestBillingSystem(unittest.TestCase):
     @patch("main.login", return_value=True)
     @patch("main.view_bill_history")
     @patch("builtins.input", side_effect=["7", "8"])
-    def test_view_bill_history(
-        self,
-        mock_input,
-        mock_view_bill_history,
-        mock_login
-    ):
+    def test_view_bill_history(self, mock_input, mock_view_bill_history, mock_login):
         main.main()
 
         mock_view_bill_history.assert_called_once()
@@ -89,19 +82,11 @@ class TestBillingSystem(unittest.TestCase):
     @patch("main.login", return_value=True)
     @patch("main.logger")
     @patch("builtins.input", side_effect=["9", "8"])
-    def test_invalid_choice(
-        self,
-        mock_input,
-        mock_logger,
-        mock_login
-    ):
+    def test_invalid_choice(self, mock_input, mock_logger, mock_login):
         main.main()
 
-        mock_logger.warning.assert_called_with(
-            "Invalid menu choice entered: %s",
-            "9"
-        )
+        mock_logger.warning.assert_called_with("Invalid menu choice entered: %s", "9")
 
 
 if __name__ == "__main__":
-    unittest.main() 
+    unittest.main()
