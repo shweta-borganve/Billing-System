@@ -31,3 +31,18 @@ def get_all_bills():
     except sqlite3.Error as e:
         print(f"Error fetching bills: {e}")
         return []
+
+
+def update_product_quantity(product_id, quantity_sold):
+    """Reduce product quantity in the database after a sale."""
+    try:
+        conn = sqlite3.connect("billing.db")
+        cursor = conn.cursor()
+        cursor.execute(
+            "UPDATE products SET quantity = quantity - ? WHERE id = ?",
+            (quantity_sold, product_id),
+        )
+        conn.commit()
+        conn.close()
+    except sqlite3.Error as e:
+        print(f"Error updating product quantity: {e}")
