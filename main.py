@@ -1,9 +1,15 @@
-from db_operations import initialize_database
 from auth import login
-from product import add_product, view_products, search_product, update_product, delete_product
 from billing import generate_bill
+from db_operations import initialize_database
 from history import view_bill_history
 from logger_config import logger
+from product import (
+    add_product,
+    delete_product,
+    search_product,
+    update_product,
+    view_products,
+)
 
 
 def main():
@@ -59,4 +65,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main() 
+    main()

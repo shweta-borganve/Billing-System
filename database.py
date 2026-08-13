@@ -1,12 +1,13 @@
 import sqlite3
-import logging
 
 # Set up database connection (this creates a file named 'billing.db' automatically)
 DB_NAME = "billing.db"
 
+
 def get_connection():
     """Creates and returns a connection to the SQLite database."""
     return sqlite3.connect(DB_NAME)
+
 
 def initialize_database():
     """Creates the products and bills tables if they don't already exist."""
@@ -38,5 +39,6 @@ def initialize_database():
     conn.close()
     print("Database and tables created successfully!")
 
+
 if __name__ == "__main__":
-    initialize_database() 
+    initialize_database()

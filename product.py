@@ -17,7 +17,12 @@ def add_product():
                 logger.warning(f"Duplicate product ID: {product_id}")
                 return
 
-        product = {"product_id": product_id, "name": name, "price": price, "quantity": quantity}
+        product = {
+            "product_id": product_id,
+            "name": name,
+            "price": price,
+            "quantity": quantity,
+        }
 
         products.append(product)
         save_data(PRODUCTS_FILE, products)
@@ -118,4 +123,4 @@ def delete_product():
 
     except ValueError:
         print("Invalid Product ID.")
-        logger.warning("Invalid Product ID entered.") 
+        logger.warning("Invalid Product ID entered.")

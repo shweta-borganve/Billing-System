@@ -27,4 +27,4 @@ def view_bill_history():
                 # Fallback if an item was accidentally saved as a raw string
                 print(f"- {item}")
 
-        print(f"Total: ₹{bill.get('total', 0.0):.2f}") 
+        print(f"Total: ₹{bill.get('total', 0.0):.2f}")

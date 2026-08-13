@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
+
+from db_operations import update_product_quantity
 from file_handler import BILLS_FILE, PRODUCTS_FILE, load_data, save_data
 from logger_config import logger
-from db_operations import update_product_quantity
 
 
 def generate_bill():
@@ -56,7 +57,7 @@ def generate_bill():
 
                     product["quantity"] -= quantity
                     total += amount
-                    
+
                     # Immediately update stock in SQLite database
                     update_product_quantity(product["product_id"], product["quantity"])
 
@@ -94,4 +95,4 @@ def generate_bill():
 
     print(f"Total: ₹{total:.2f}")
 
-    logger.info(f"Bill generated successfully: {bill['bill_id']}") 
+    logger.info(f"Bill generated successfully: {bill['bill_id']}")
