@@ -2,6 +2,38 @@ import json
 import sqlite3
 
 
+def initialize_database():
+    """Initialize the SQLite database and create required tables if they don't exist."""
+    try:
+        conn = sqlite3.connect("billing.db")
+        cursor = conn.cursor()
+
+        # Create products table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS products ( 
+                id INTEGER PRIMARY KEY,
+                name TEXT NOT NULL,
+                price REAL NOT NULL,
+                quantity INTEGER NOT NULL
+            )
+        """)
+
+        # Create bills table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS bills (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                date TEXT NOT NULL,
+                total_amount REAL NOT NULL,
+                items TEXT NOT NULL
+            )
+        """)
+
+        conn.commit()
+        conn.close()
+    except sqlite3.Error as e:
+        print(f"Error initializing database: {e}")
+
+
 def get_all_bills():
     """Fetch all bills from the SQLite database."""
     try:
