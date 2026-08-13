@@ -1,4 +1,4 @@
-# 🛒 Python CLI Billing System
+# 🛒 Python CLI BILLING SYSTEM
 
 A robust, console-based billing and inventory management system built in Python, backed by a **SQLite database**, and equipped with automated unit testing.
 
@@ -83,14 +83,6 @@ Configures the application's logging system and records application events.
 ### test_main.py
 
 Contains unit tests for testing the application's functionality using Python's built-in `unittest` framework.
-
-### products.json
-
-Stores product information.
-
-### bills.json
-
-Stores generated bill information.
 
 ### requirements.txt
 
