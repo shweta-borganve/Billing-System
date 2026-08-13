@@ -1,71 +1,45 @@
-# BILLING SYSTEM
+# 🛒 Python CLI Billing System
 
-A simple and modular **Billing System** developed using Python. The application manages products, generates customer bills, maintains billing history, stores data using JSON files, and records application activities using Python logging.
+A robust, console-based billing and inventory management system built in Python, backed by a **SQLite database**, and equipped with automated unit testing.
 
-The project also includes **unit testing, Black, Ruff, and GitHub Actions** for automated testing, code quality checks, and Continuous Integration (CI).
+## 🚀 Features
 
-## Features
+* **Admin Authentication:** Secure login system to access admin privileges.
+* **Product Management:** Add, view, search, update, and delete products easily.
+* **Inventory Control:** Automatic stock reduction when a bill is generated.
+* **Billing System:** Generate itemized bills with total cost calculations and persistence.
+* **Transaction History:** View past generated bills and sales records.
+* **Database Powered:** Built with **SQLite (`billing.db`)** for fast, reliable data persistence.
+* **Automated Testing:** Fully covered test suite using Python's `unittest` framework.
 
-* Admin login authentication
-* Add new products
-* View all products
-* Search products
-* Update product details
-* Delete products
-* Generate customer bills
-* Calculate bill totals
-* Update product stock after billing
-* Maintain bill history
-* Store data using JSON files
-* Exception handling
-* Application logging using Python's `logging` module
-* Modular Python file structure
-* Unit testing using Python `unittest`
-* Code formatting checks using Black
-* Code quality checks using Ruff
-* Python file compilation check
-* GitHub Actions Continuous Integration (CI)
+---
 
-## Technologies Used
+## 🛠️ Tech Stack
 
-* Python
-* JSON
-* Python Logging
-* Python unittest
-* Black
-* Ruff
-* Git
-* GitHub
-* GitHub Actions
-* YAML
-* Ubuntu
+* **Language:** Python 3
+* **Database:** SQLite3
+* **Testing:** `unittest`, `unittest.mock`
 
-## Project Structure
+---
+
+## 📁 Project Structure
 
 ```text
 Billing-System/
 │
-├── .github/
-│   └── workflows/
-│       └── python.yml
-│
-├── data/
-│   ├── products.json
-│   └── bills.json
-│
-├── logs/
-│
-├── auth.py
-├── billing.py
-├── file_handler.py
-├── history.py
-├── logger_config.py
-├── main.py
-├── product.py
-├── test_main.py
-├── requirements.txt
-├── .gitignore
-└── README.md
+├── billing.db          # SQLite database storing products and bills
+├── main.py             # Entry point and CLI menu loop
+├── auth.py             # Admin authentication logic
+├── database.py         # SQLite connection and table creation setup
+├── db_operations.py    # Database CRUD operations (Products & Bills)
+├── product.py          # Product domain logic
+├── billing.py          # Billing and checkout calculation logic
+├── history.py          # Bill history retrieval logic
+├── file_handler.py     # Utility functions
+├── logger_config.py    # Logging configuration
+├── test_main.py        # Automated test suite
+├── requirements.txt    # Project dependencies
+└── README.md           # Project documentation
 ```
 
 > Generated files such as `__pycache__`, `.pyc` files, and log files are excluded from Git using `.gitignore`.

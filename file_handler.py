@@ -1,48 +1,59 @@
 import json
-import os
-
+from db_operations import (
+    get_all_products,
+    get_all_bills,
+    add_product as db_add_product,
+    update_product_quantity as db_update_quantity,
+    save_bill as db_save_bill
+)
 from logger_config import logger
 
-DATA_FOLDER = "data"
-PRODUCTS_FILE = os.path.join(DATA_FOLDER, "products.json")
-BILLS_FILE = os.path.join(DATA_FOLDER, "bills.json")
-
+PRODUCTS_FILE = "products"
+BILLS_FILE = "bills"
 
 def load_data(filename):
+    """Loads products or bills from the SQLite database."""
     try:
-        if not os.path.exists(DATA_FOLDER):
-            os.makedirs(DATA_FOLDER)
-
-        if not os.path.exists(filename):
-            with open(filename, "w") as file:
-                json.dump([], file, indent=4)
-
-            return []
-
-        with open(filename, "r") as file:
-            data = json.load(file)
-
-        logger.info(f"Data loaded successfully from {filename}")
-        return data
-
-    except json.JSONDecodeError:
-        logger.error(f"Invalid JSON data in {filename}")
+        if "products" in str(filename):
+            logger.info("Products loaded successfully from SQLite database")
+            return get_all_products()
+        elif "bills" in str(filename):
+            logger.info("Bills loaded successfully from SQLite database")
+            return get_all_bills()
         return []
-
-    except Exception as e:  # noqa: BLE001
-        logger.error(f"Error loading {filename}: {e}")
+    except Exception as e:
+        logger.error(f"Error loading data for {filename}: {e}")
         return []
-
 
 def save_data(filename, data):
+    """Saves data into the SQLite database."""
     try:
-        if not os.path.exists(DATA_FOLDER):
-            os.makedirs(DATA_FOLDER)
-
-        with open(filename, "w") as file:
-            json.dump(data, file, indent=4)
-
-        logger.info(f"Data saved successfully to {filename}")
-
-    except Exception as e:  # noqa: BLE001
-        logger.error(f"Error saving {filename}: {e}")
+        if "products" in str(filename):
+            if isinstance(data, list) and len(data) > 0:
+                new_item = data[-1]
+                db_add_product(
+                    str(new_item["product_id"]), 
+                    new_item["name"], 
+                    new_item["price"], 
+                    new_item["quantity"]
+                )
+            logger.info("Product data saved to SQLite database")
+        elif "bills" in str(filename):
+            if isinstance(data, dict):
+                items = data.get("items", [])
+                # Ensure items is a list or properly loaded if it's already a string
+                if isinstance(items, str):
+                    try:
+                        items = json.loads(items)
+                    except:
+                        pass
+                
+                db_save_bill(
+                    json.dumps(items), 
+                    data.get("total", 0.0), 
+                    data.get("timestamp", data.get("date", ""))
+                )
+            logger.info("Bill saved successfully to SQLite database")
+            
+    except Exception as e:
+        logger.error(f"Error saving to database for {filename}: {e}") 

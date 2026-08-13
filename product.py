@@ -12,12 +12,12 @@ def add_product():
         quantity = int(input("Enter Quantity: "))
 
         for product in products:
-            if product["id"] == product_id:
+            if int(product["product_id"]) == product_id:
                 print("Product ID already exists.")
                 logger.warning(f"Duplicate product ID: {product_id}")
                 return
 
-        product = {"id": product_id, "name": name, "price": price, "quantity": quantity}
+        product = {"product_id": product_id, "name": name, "price": price, "quantity": quantity}
 
         products.append(product)
         save_data(PRODUCTS_FILE, products)
@@ -42,7 +42,7 @@ def view_products():
 
     for product in products:
         print(
-            f"ID: {product['id']} | "
+            f"ID: {product['product_id']} | "
             f"Name: {product['name']} | "
             f"Price: ₹{product['price']} | "
             f"Quantity: {product['quantity']}"
@@ -56,7 +56,7 @@ def search_product():
         product_id = int(input("Enter Product ID to search: "))
 
         for product in products:
-            if product["id"] == product_id:
+            if int(product["product_id"]) == product_id:
                 print("\nProduct Found:")
                 print(product)
                 logger.info(f"Product searched: {product_id}")
@@ -77,7 +77,7 @@ def update_product():
         product_id = int(input("Enter Product ID to update: "))
 
         for product in products:
-            if product["id"] == product_id:
+            if int(product["product_id"]) == product_id:
 
                 product["name"] = input("Enter new name: ")
                 product["price"] = float(input("Enter new price: "))
@@ -104,7 +104,7 @@ def delete_product():
         product_id = int(input("Enter Product ID to delete: "))
 
         for product in products:
-            if product["id"] == product_id:
+            if int(product["product_id"]) == product_id:
 
                 products.remove(product)
                 save_data(PRODUCTS_FILE, products)
@@ -118,4 +118,4 @@ def delete_product():
 
     except ValueError:
         print("Invalid Product ID.")
-        logger.warning("Invalid Product ID entered.")
+        logger.warning("Invalid Product ID entered.") 
