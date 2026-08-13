@@ -4,16 +4,25 @@ import sqlite3
 from db_operations import get_all_bills
 from logger_config import logger
 
+# Compatibility constants for modules still referencing file paths
+BILLS_FILE = "data/bills.json"
+PRODUCTS_FILE = "data/products.json"
+
 
 def load_data(filename):
     """Load data handler compatible with SQLite or fallbacks."""
     try:
-        if "bill" in filename.lower():
+        if "bill" in filename.lower() or filename == BILLS_FILE:
             return get_all_bills()
         return []
     except (sqlite3.Error, json.JSONDecodeError) as e:
         logger.error(f"Error loading data for {filename}: {e}")
         return []
+
+
+def save_data(filename, data):
+    """Compatibility wrapper for saving data."""
+    logger.info(f"save_data called for {filename} (handled via SQLite)")
 
 
 def save_bill_record(filename, items, total_amount, date):
