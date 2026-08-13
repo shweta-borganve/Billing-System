@@ -17,15 +17,17 @@ def get_all_bills():
                     items_data = json.loads(items_data)
             except json.JSONDecodeError:
                 items_data = []
-            
-            bills.append({
-                "id": bill_id,
-                "date": date,
-                "total_amount": total_amount,
-                "items": items_data
-            })
+
+            bills.append(
+                {
+                    "id": bill_id,
+                    "date": date,
+                    "total_amount": total_amount,
+                    "items": items_data,
+                }
+            )
         conn.close()
         return bills
     except sqlite3.Error as e:
         print(f"Error fetching bills: {e}")
-        return [] 
+        return []
