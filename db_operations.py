@@ -1,11 +1,13 @@
 import json
 import sqlite3
 
+from config import DB_NAME  # <-- Added config import
+
 
 def initialize_database():
     """Initialize the SQLite database and create required tables if they don't exist."""
     try:
-        conn = sqlite3.connect("billing.db")
+        conn = sqlite3.connect(DB_NAME)  # <-- Updated to use DB_NAME
         cursor = conn.cursor()
 
         # Create products table
@@ -37,7 +39,7 @@ def initialize_database():
 def get_all_bills():
     """Fetch all bills from the SQLite database."""
     try:
-        conn = sqlite3.connect("billing.db")
+        conn = sqlite3.connect(DB_NAME)  # <-- Updated to use DB_NAME
         cursor = conn.cursor()
         cursor.execute("SELECT id, date, total_amount, items FROM bills")
         rows = cursor.fetchall()
@@ -68,7 +70,7 @@ def get_all_bills():
 def update_product_quantity(product_id, quantity_sold):
     """Reduce product quantity in the database after a sale."""
     try:
-        conn = sqlite3.connect("billing.db")
+        conn = sqlite3.connect(DB_NAME)  # <-- Updated to use DB_NAME
         cursor = conn.cursor()
         cursor.execute(
             "UPDATE products SET quantity = quantity - ? WHERE id = ?",

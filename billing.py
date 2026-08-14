@@ -1,13 +1,24 @@
+import json
+import sqlite3
 from datetime import datetime, timezone
 
+from config import DB_NAME
 from db_operations import update_product_quantity
-from file_handler import BILLS_FILE, PRODUCTS_FILE, load_data, save_data
+from file_handler import PRODUCTS_FILE, load_data
 from logger_config import logger
+
+
+def check_low_stock_in_list(products, threshold=5):
+    """Checks the current products array for items at or below the low stock threshold."""
+    low_stock_items = []
+    for product in products:
+        if product.get("quantity", 0) <= threshold:
+            low_stock_items.append((product.get("name"), product.get("quantity")))
+    return low_stock_items
 
 
 def generate_bill():
     products = load_data(PRODUCTS_FILE)
-    bills = load_data(BILLS_FILE)
 
     if not products:
         print("No products available.")
@@ -25,23 +36,21 @@ def generate_bill():
                 break
 
             quantity = int(input("Enter quantity: "))
-
             found = False
 
             for product in products:
-
                 if int(product["product_id"]) == product_id:
                     found = True
 
                     if quantity <= 0:
                         print("Quantity must be greater than 0.")
                         logger.warning("Invalid quantity entered.")
-                        continue
+                        break
 
                     if quantity > product["quantity"]:
                         print("Insufficient stock.")
                         logger.warning(f"Insufficient stock for product: {product_id}")
-                        continue
+                        break
 
                     amount = product["price"] * quantity
 
@@ -54,14 +63,24 @@ def generate_bill():
                     }
 
                     items.append(item)
-
-                    product["quantity"] -= quantity
                     total += amount
 
-                    # Immediately update stock in SQLite database
-                    update_product_quantity(product["product_id"], product["quantity"])
+                    # Subtract sold quantity from the database properly
+                    new_qty = product["quantity"] - quantity
+                    update_product_quantity(product["product_id"], quantity)
+                    product["quantity"] = new_qty
 
                     print(f"Added {product['name']} to bill.")
+
+                    # Check if this item is now low in stock after purchase
+                    if new_qty <= 5:
+                        print(
+                            f"⚠️  ALERT: {product['name']} is now running low on stock ({new_qty} left)! ⚠️"
+                        )
+                        logger.warning(
+                            f"Low stock alert triggered for product {product['name']}: {new_qty} remaining."
+                        )
+
                     break
 
             if not found:
@@ -76,23 +95,73 @@ def generate_bill():
         print("No items added to bill.")
         return
 
-    bill = {
-        "bill_id": len(bills) + 1,
-        "date": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
-        "items": items,
-        "total": total,
-    }
+    date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
-    bills.append(bill)
-    save_data(BILLS_FILE, bill)
+    # Save bill directly to SQLite database
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO bills (date, total_amount, items) VALUES (?, ?, ?)",
+            (date_str, total, json.dumps(items)),
+        )
+        conn.commit()
 
-    print("\n===== BILL =====")
-    print(f"Bill ID: {bill['bill_id']}")
-    print(f"Date: {bill['date']}")
+        # Fetch the generated bill ID
+        cursor.execute("SELECT last_insert_rowid()")
+        bill_id = cursor.fetchone()[0]
+        conn.close()
 
-    for item in items:
-        print(f"{item['name']} x {item['quantity']} = ₹{item['amount']:.2f}")
+        print("\n===== BILL =====")
+        print(f"Bill ID: {bill_id}")
+        print(f"Date: {date_str}")
 
-    print(f"Total: ₹{total:.2f}")
+        for item in items:
+            print(f"{item['name']} x {item['quantity']} = ₹{item['amount']:.2f}")
 
-    logger.info(f"Bill generated successfully: {bill['bill_id']}")
+        print(f"Total: ₹{total:.2f}")
+        logger.info(f"Bill generated successfully: {bill_id}")
+
+    except sqlite3.Error as e:
+        print(f"Database error while saving bill: {e}")
+        logger.error(f"Database error saving bill: {e}")
+
+
+def view_bill_history():
+    """Fetch and display all past bills from the SQLite database."""
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, date, total_amount, items FROM bills")
+        rows = cursor.fetchall()
+        conn.close()
+
+        if not rows:
+            print("No bill history available.")
+            logger.warning("No bill history available to display.")
+            return
+
+        print("\n===== BILL HISTORY =====")
+        for row in rows:
+            bill_id, date, total_amount, items_data = row
+            try:
+                if isinstance(items_data, str):
+                    items_data = json.loads(items_data)
+            except json.JSONDecodeError:
+                items_data = []
+
+            print(f"\nBill ID: {bill_id} | Date: {date}")
+            print("-" * 35)
+            for item in items_data:
+                name = item.get("name", "Unknown")
+                qty = item.get("quantity", 0)
+                amount = item.get("amount", 0)
+                print(f"  - {name} x {qty} = ₹{amount:.2f}")
+            print(f"Total Amount: ₹{total_amount:.2f}")
+            print("-" * 35)
+
+        logger.info("Bill history viewed successfully.")
+
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        logger.error(f"Error viewing bill history: {e}")
