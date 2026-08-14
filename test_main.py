@@ -18,11 +18,7 @@ class TestBillingSystem(unittest.TestCase):
     # Test Add Product
     @patch("main.login", return_value=True)
     @patch("main.add_product")
-feature/sqlite-integration
     @patch("builtins.input", side_effect=["1", "10"])
-
-    @patch("builtins.input", side_effect=["1", "9"])
-main
     def test_add_product(self, mock_input, mock_add_product, mock_login):
         main.main()
         mock_add_product.assert_called_once()
@@ -30,11 +26,7 @@ main
     # Test View Products
     @patch("main.login", return_value=True)
     @patch("main.view_products")
-feature/sqlite-integration
     @patch("builtins.input", side_effect=["2", "10"])
-
-    @patch("builtins.input", side_effect=["2", "9"])
-main
     def test_view_products(self, mock_input, mock_view_products, mock_login):
         main.main()
         mock_view_products.assert_called_once()
@@ -42,11 +34,7 @@ main
     # Test Search Product
     @patch("main.login", return_value=True)
     @patch("main.search_product")
-feature/sqlite-integration
     @patch("builtins.input", side_effect=["3", "10"])
-
-    @patch("builtins.input", side_effect=["3", "9"])
-main
     def test_search_product(self, mock_input, mock_search_product, mock_login):
         main.main()
         mock_search_product.assert_called_once()
@@ -54,11 +42,7 @@ main
     # Test Update Product
     @patch("main.login", return_value=True)
     @patch("main.update_product")
-feature/sqlite-integration
     @patch("builtins.input", side_effect=["4", "10"])
-
-    @patch("builtins.input", side_effect=["4", "9"])
-main
     def test_update_product(self, mock_input, mock_update_product, mock_login):
         main.main()
         mock_update_product.assert_called_once()
@@ -66,11 +50,7 @@ main
     # Test Delete Product
     @patch("main.login", return_value=True)
     @patch("main.delete_product")
-feature/sqlite-integration
     @patch("builtins.input", side_effect=["5", "10"])
-
-    @patch("builtins.input", side_effect=["5", "9"])
-main
     def test_delete_product(self, mock_input, mock_delete_product, mock_login):
         main.main()
         mock_delete_product.assert_called_once()
@@ -78,11 +58,7 @@ main
     # Test Generate Bill
     @patch("main.login", return_value=True)
     @patch("main.generate_bill")
-feature/sqlite-integration
     @patch("builtins.input", side_effect=["6", "10"])
-
-    @patch("builtins.input", side_effect=["6", "9"])
-main
     def test_generate_bill(self, mock_input, mock_generate_bill, mock_login):
         main.main()
         mock_generate_bill.assert_called_once()
@@ -90,11 +66,7 @@ main
     # Test View Bill History
     @patch("main.login", return_value=True)
     @patch("main.view_bill_history")
-feature/sqlite-integration
     @patch("builtins.input", side_effect=["7", "10"])
-
-    @patch("builtins.input", side_effect=["7", "9"])
-main
     def test_view_bill_history(self, mock_input, mock_view_bill_history, mock_login):
         main.main()
         mock_view_bill_history.assert_called_once()
@@ -102,16 +74,11 @@ main
     # Test Check Low Stock Alerts Option
     @patch("main.login", return_value=True)
     @patch("main.sqlite3.connect")
-feature/sqlite-integration
     @patch("builtins.input", side_effect=["8", "10"])
-
-    @patch("builtins.input", side_effect=["8", "9"])
-main
     def test_check_low_stock_option(self, mock_input, mock_connect, mock_login):
         main.main()
         mock_connect.assert_called()
 
-feature/sqlite-integration
     # Test Sales Analytics & Reporting Option
     @patch("main.login", return_value=True)
     @patch("main.generate_sales_report")
@@ -130,15 +97,6 @@ feature/sqlite-integration
         main.main()
         mock_logger.warning.assert_called_with("Invalid menu choice entered: 11")
 
-    # Test Invalid Choice
-    @patch("main.login", return_value=True)
-    @patch("main.logger")
-    @patch("builtins.input", side_effect=["10", "9"])
-    def test_invalid_choice(self, mock_input, mock_logger, mock_login):
-        main.main()
-        mock_logger.warning.assert_called_with("Invalid menu choice entered: 10")
-main
-
 
 if __name__ == "__main__":
-    unittest.main() 
+    unittest.main()
