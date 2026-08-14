@@ -1,5 +1,8 @@
+import sqlite3
+
 from auth import login
 from billing import generate_bill
+from config import DB_NAME
 from db_operations import initialize_database
 from history import view_bill_history
 from logger_config import logger
@@ -10,6 +13,30 @@ from product import (
     update_product,
     view_products,
 )
+
+
+def check_and_display_low_stock(threshold=5):
+    """Checks the database for low stock items and displays a warning banner."""
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT name, quantity FROM products WHERE quantity <= ?", (threshold,)
+        )
+        low_stock_items = cursor.fetchall()
+        conn.close()
+
+        if low_stock_items:
+            print("\n" + "=" * 50)
+            print("⚠️  WARNING: The following items are low in stock! ⚠️")
+            for name, qty in low_stock_items:
+                print(f"   • {name}: only {qty} left!")
+            print("=" * 50 + "\n")
+            logger.warning(
+                f"Low stock warning displayed for {len(low_stock_items)} item(s)."
+            )
+    except sqlite3.Error as e:
+        logger.error(f"Database error checking low stock: {e}")
 
 
 def main():
@@ -23,6 +50,9 @@ def main():
 
     logger.info("Admin logged in successfully.")
 
+    # Show low stock alerts automatically right after login/startup
+    check_and_display_low_stock()
+
     while True:
         print("\n===== Billing System Menu =====")
         print("1. Add Product")
@@ -32,7 +62,8 @@ def main():
         print("5. Delete Product")
         print("6. Generate Bill")
         print("7. View Bill History")
-        print("8. Exit")
+        print("8. Check Low Stock Alerts")
+        print("9. Exit")
 
         try:
             choice = int(input("Enter your choice: "))
@@ -52,11 +83,13 @@ def main():
             elif choice == 7:
                 view_bill_history()
             elif choice == 8:
+                check_and_display_low_stock()
+            elif choice == 9:
                 print("Thank you for using Billing System!")
                 logger.info("Application exited.")
                 break
             else:
-                print("Invalid choice! Please enter a number between 1 and 8.")
+                print("Invalid choice! Please enter a number between 1 and 9.")
                 logger.warning(f"Invalid menu choice entered: {choice}")
 
         except ValueError:
