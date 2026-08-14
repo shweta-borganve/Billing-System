@@ -8,6 +8,15 @@ from file_handler import PRODUCTS_FILE, load_data
 from logger_config import logger
 
 
+def check_low_stock_in_list(products, threshold=5):
+    """Checks the current products array for items at or below the low stock threshold."""
+    low_stock_items = []
+    for product in products:
+        if product.get("quantity", 0) <= threshold:
+            low_stock_items.append((product.get("name"), product.get("quantity")))
+    return low_stock_items
+
+
 def generate_bill():
     products = load_data(PRODUCTS_FILE)
 
@@ -62,6 +71,16 @@ def generate_bill():
                     product["quantity"] = new_qty
 
                     print(f"Added {product['name']} to bill.")
+
+                    # Check if this item is now low in stock after purchase
+                    if new_qty <= 5:
+                        print(
+                            f"⚠️  ALERT: {product['name']} is now running low on stock ({new_qty} left)! ⚠️"
+                        )
+                        logger.warning(
+                            f"Low stock alert triggered for product {product['name']}: {new_qty} remaining."
+                        )
+
                     break
 
             if not found:
