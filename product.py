@@ -1,31 +1,38 @@
-from file_handler import PRODUCTS_FILE, load_data, save_data
+from db_operations import (
+    initialize_database,
+    get_all_bills,
+    update_product_quantity
+)
+import sqlite3
+from config import DB_NAME
 from logger_config import logger
 
 
 def add_product():
-    products = load_data(PRODUCTS_FILE)
-
     try:
         product_id = int(input("Enter Product ID: "))
-        name = input("Enter Product Name: ")
+        name = input("Enter Product Name: ") 
         price = float(input("Enter Product Price: "))
         quantity = int(input("Enter Quantity: "))
 
-        for product in products:
-            if int(product["product_id"]) == product_id:
-                print("Product ID already exists.")
-                logger.warning(f"Duplicate product ID: {product_id}")
-                return
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
 
-        product = {
-            "product_id": product_id,
-            "name": name,
-            "price": price,
-            "quantity": quantity,
-        }
+        # Check if product ID already exists
+        cursor.execute("SELECT id FROM products WHERE id = ?", (product_id,))
+        if cursor.fetchone():
+            print("Product ID already exists.")
+            logger.warning(f"Duplicate product ID: {product_id}")
+            conn.close()
+            return
 
-        products.append(product)
-        save_data(PRODUCTS_FILE, products)
+        # Insert new product into SQLite
+        cursor.execute(
+            "INSERT INTO products (id, name, price, quantity) VALUES (?, ?, ?, ?)",
+            (product_id, name, price, quantity)
+        )
+        conn.commit()
+        conn.close()
 
         print("Product added successfully.")
         logger.info(f"Product added: {name}")
@@ -33,94 +40,118 @@ def add_product():
     except ValueError:
         print("Invalid input.")
         logger.warning("Invalid input while adding product.")
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        logger.error(f"Database error while adding product: {e}")
 
 
 def view_products():
-    products = load_data(PRODUCTS_FILE)
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, name, price, quantity FROM products")
+        rows = cursor.fetchall()
+        conn.close()
 
-    if not products:
-        print("No products available.")
-        logger.warning("No products available to display.")
-        return
+        if not rows:
+            print("No products available.")
+            logger.warning("No products available to display.")
+            return
 
-    print("\n===== Products =====")
-
-    for product in products:
-        print(
-            f"ID: {product['product_id']} | "
-            f"Name: {product['name']} | "
-            f"Price: ₹{product['price']} | "
-            f"Quantity: {product['quantity']}"
-        )
+        print("\n===== Products =====")
+        for row in rows:
+            p_id, name, price, quantity = row
+            print(
+                f"ID: {p_id} | "
+                f"Name: {name} | "
+                f"Price: ₹{price} | "
+                f"Quantity: {quantity}"
+            )
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        logger.error(f"Error viewing products: {e}")
 
 
 def search_product():
-    products = load_data(PRODUCTS_FILE)
-
     try:
         product_id = int(input("Enter Product ID to search: "))
 
-        for product in products:
-            if int(product["product_id"]) == product_id:
-                print("\nProduct Found:")
-                print(product)
-                logger.info(f"Product searched: {product_id}")
-                return
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, name, price, quantity FROM products WHERE id = ?", (product_id,))
+        row = cursor.fetchone()
+        conn.close()
 
-        print("Product not found.")
-        logger.warning(f"Product not found: {product_id}")
+        if row:
+            p_id, name, price, quantity = row
+            print("\nProduct Found:")
+            print(f"ID: {p_id} | Name: {name} | Price: ₹{price} | Quantity: {quantity}")
+            logger.info(f"Product searched: {product_id}")
+        else:
+            print("Product not found.")
+            logger.warning(f"Product not found: {product_id}")
 
     except ValueError:
         print("Invalid Product ID.")
         logger.warning("Invalid Product ID entered.")
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
 
 
 def update_product():
-    products = load_data(PRODUCTS_FILE)
-
     try:
         product_id = int(input("Enter Product ID to update: "))
 
-        for product in products:
-            if int(product["product_id"]) == product_id:
+        name = input("Enter new name: ")
+        price = float(input("Enter new price: "))
+        quantity = int(input("Enter new quantity: "))
 
-                product["name"] = input("Enter new name: ")
-                product["price"] = float(input("Enter new price: "))
-                product["quantity"] = int(input("Enter new quantity: "))
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM products WHERE id = ?", (product_id,))
+        if not cursor.fetchone():
+            print("Product not found.")
+            conn.close()
+            return
 
-                save_data(PRODUCTS_FILE, products)
+        cursor.execute(
+            "UPDATE products SET name = ?, price = ?, quantity = ? WHERE id = ?",
+            (name, price, quantity, product_id)
+        )
+        conn.commit()
+        conn.close()
 
-                print("Product updated successfully.")
-                logger.info(f"Product updated: {product_id}")
-                return
-
-        print("Product not found.")
-        logger.warning(f"Product not found for update: {product_id}")
+        print("Product updated successfully.")
+        logger.info(f"Product updated: {product_id}")
 
     except ValueError:
         print("Invalid input.")
         logger.warning("Invalid input while updating product.")
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
 
 
 def delete_product():
-    products = load_data(PRODUCTS_FILE)
-
     try:
         product_id = int(input("Enter Product ID to delete: "))
 
-        for product in products:
-            if int(product["product_id"]) == product_id:
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM products WHERE id = ?", (product_id,))
+        if not cursor.fetchone():
+            print("Product not found.")
+            conn.close()
+            return
 
-                products.remove(product)
-                save_data(PRODUCTS_FILE, products)
+        cursor.execute("DELETE FROM products WHERE id = ?", (product_id,))
+        conn.commit()
+        conn.close()
 
-                print("Product deleted successfully.")
-                logger.info(f"Product deleted: {product_id}")
-                return
-
-        print("Product not found.")
-        logger.warning(f"Product not found for deletion: {product_id}")
+        print("Product deleted successfully.")
+        logger.info(f"Product deleted: {product_id}")
 
     except ValueError:
         print("Invalid Product ID.")
         logger.warning("Invalid Product ID entered.")
+    except sqlite3.Error as e:
+        print(f"Database error: {e}") 

@@ -1,6 +1,6 @@
 import json
 import sqlite3
-
+from config import DB_NAME
 from db_operations import get_all_bills
 from logger_config import logger
 
@@ -10,10 +10,31 @@ PRODUCTS_FILE = "data/products.json"
 
 
 def load_data(filename):
-    """Load data handler compatible with SQLite or fallbacks."""
+    """Load data handler compatible with SQLite database."""
     try:
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+
         if "bill" in filename.lower() or filename == BILLS_FILE:
+            conn.close()
             return get_all_bills()
+        
+        elif "product" in filename.lower() or filename == PRODUCTS_FILE:
+            cursor.execute("SELECT id, name, price, quantity FROM products")
+            rows = cursor.fetchall()
+            products = []
+            for row in rows:
+                p_id, name, price, quantity = row
+                products.append({
+                    "product_id": p_id,
+                    "name": name,
+                    "price": price,
+                    "quantity": quantity
+                })
+            conn.close()
+            return products
+
+        conn.close()
         return []
     except (sqlite3.Error, json.JSONDecodeError) as e:
         logger.error(f"Error loading data for {filename}: {e}")
@@ -21,19 +42,37 @@ def load_data(filename):
 
 
 def save_data(filename, data):
-    """Compatibility wrapper for saving data."""
-    logger.info(f"save_data called for {filename} (handled via SQLite)")
+    """Save data to SQLite database instead of dummy files."""
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+
+        if "product" in filename.lower() or filename == PRODUCTS_FILE:
+            # Clear table and re-insert or sync data from the app list
+            cursor.execute("DELETE FROM products")
+            for p in data:
+                cursor.execute(
+                    "INSERT INTO products (id, name, price, quantity) VALUES (?, ?, ?, ?)",
+                    (p["product_id"], p["name"], p["price"], p["quantity"])
+                )
+            conn.commit()
+            logger.info("Products successfully saved to SQLite database")
+
+        conn.close()
+    except sqlite3.Error as e:
+        logger.error(f"Error saving data for {filename}: {e}")
 
 
 def save_bill_record(filename, items, total_amount, date):
-    """Save a bill record safely."""
+    """Save a bill record safely to SQLite."""
     try:
         try:
-            items = json.loads(items)
+            if isinstance(items, str):
+                items = json.loads(items)
         except json.JSONDecodeError:
             pass
 
-        conn = sqlite3.connect("billing.db")
+        conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
         cursor.execute(
             "INSERT INTO bills (date, total_amount, items) VALUES (?, ?, ?)",
@@ -44,4 +83,4 @@ def save_bill_record(filename, items, total_amount, date):
         logger.info("Bill saved successfully to SQLite database")
 
     except sqlite3.Error as e:
-        logger.error(f"Error saving to database for {filename}: {e}")
+        logger.error(f"Error saving to database for {filename}: {e}") 
