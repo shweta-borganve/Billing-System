@@ -4,37 +4,58 @@ on:
   push:
     branches:
       - main
-
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: "pip"
 
       - name: Check Python version
-        run: python --version
+        run: |
+          echo "=== Python Version ==="
+          python --version
+          python -c "import sys; print(f'Executable: {sys.executable}')"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          echo "=== Installing dependencies from requirements.txt ==="
+          pip install -r requirements.txt --verbose
+          echo "=== Installed packages ==="
+          pip list
 
       - name: Check code formatting with Black
-        run: black --check .
+        run: |
+          echo "=== Running Black formatter check ==="
+          black --check --diff . || (echo "❌ Black found formatting issues" && exit 1)
+          echo "✅ Black: All files properly formatted"
 
       - name: Check code quality with Ruff
-        run: ruff check .
+        run: |
+          echo "=== Running Ruff linter ==="
+          ruff check . --statistics || (echo "❌ Ruff found issues" && exit 1)
+          echo "✅ Ruff: No issues found"
 
       - name: Compile Python files
-        run: python -m compileall .
+        run: |
+          echo "=== Compiling Python files ==="
+          python -m compileall . || (echo "❌ Compilation failed" && exit 1)
+          echo "✅ All Python files compiled successfully"
 
       - name: Run unit tests
-        run: python -m unittest test_main.py -v 
+        run: |
+          echo "=== Running unit tests ==="
+          python -m unittest test_main.py -v || (echo "❌ Tests failed" && exit 1)
+          echo "✅ All tests passed"
