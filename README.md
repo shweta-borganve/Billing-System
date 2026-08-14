@@ -2,7 +2,7 @@
 
 A robust, console-based billing and inventory management system built in Python, backed by a **SQLite database**, and equipped with automated unit testing.
 
-## 🚀 Features
+## 🚀 FEATURES
 
 * **Admin Authentication:** Secure login system to access admin privileges.
 * **Product Management:** Add, view, search, update, and delete products easily.
