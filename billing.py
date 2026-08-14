@@ -1,9 +1,10 @@
-from datetime import datetime, timezone
 import json
 import sqlite3
+from datetime import datetime, timezone
+
 from config import DB_NAME
 from db_operations import update_product_quantity
-from file_handler import BILLS_FILE, PRODUCTS_FILE, load_data, save_data
+from file_handler import PRODUCTS_FILE, load_data
 from logger_config import logger
 
 
@@ -86,7 +87,7 @@ def generate_bill():
             (date_str, total, json.dumps(items)),
         )
         conn.commit()
-        
+
         # Fetch the generated bill ID
         cursor.execute("SELECT last_insert_rowid()")
         bill_id = cursor.fetchone()[0]
@@ -144,4 +145,4 @@ def view_bill_history():
 
     except sqlite3.Error as e:
         print(f"Database error: {e}")
-        logger.error(f"Error viewing bill history: {e}") 
+        logger.error(f"Error viewing bill history: {e}")

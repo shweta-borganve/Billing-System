@@ -1,5 +1,6 @@
 import json
 import sqlite3
+
 from config import DB_NAME
 from db_operations import get_all_bills
 from logger_config import logger
@@ -18,19 +19,21 @@ def load_data(filename):
         if "bill" in filename.lower() or filename == BILLS_FILE:
             conn.close()
             return get_all_bills()
-        
+
         elif "product" in filename.lower() or filename == PRODUCTS_FILE:
             cursor.execute("SELECT id, name, price, quantity FROM products")
             rows = cursor.fetchall()
             products = []
             for row in rows:
                 p_id, name, price, quantity = row
-                products.append({
-                    "product_id": p_id,
-                    "name": name,
-                    "price": price,
-                    "quantity": quantity
-                })
+                products.append(
+                    {
+                        "product_id": p_id,
+                        "name": name,
+                        "price": price,
+                        "quantity": quantity,
+                    }
+                )
             conn.close()
             return products
 
@@ -53,7 +56,7 @@ def save_data(filename, data):
             for p in data:
                 cursor.execute(
                     "INSERT INTO products (id, name, price, quantity) VALUES (?, ?, ?, ?)",
-                    (p["product_id"], p["name"], p["price"], p["quantity"])
+                    (p["product_id"], p["name"], p["price"], p["quantity"]),
                 )
             conn.commit()
             logger.info("Products successfully saved to SQLite database")
@@ -83,4 +86,4 @@ def save_bill_record(filename, items, total_amount, date):
         logger.info("Bill saved successfully to SQLite database")
 
     except sqlite3.Error as e:
-        logger.error(f"Error saving to database for {filename}: {e}") 
+        logger.error(f"Error saving to database for {filename}: {e}")

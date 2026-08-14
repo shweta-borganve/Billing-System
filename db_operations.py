@@ -1,5 +1,6 @@
 import json
 import sqlite3
+
 from config import DB_NAME  # <-- Added config import
 
 
@@ -78,4 +79,4 @@ def update_product_quantity(product_id, quantity_sold):
         conn.commit()
         conn.close()
     except sqlite3.Error as e:
-        print(f"Error updating product quantity: {e}") 
+        print(f"Error updating product quantity: {e}")

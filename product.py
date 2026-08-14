@@ -1,9 +1,5 @@
-from db_operations import (
-    initialize_database,
-    get_all_bills,
-    update_product_quantity
-)
 import sqlite3
+
 from config import DB_NAME
 from logger_config import logger
 
@@ -11,7 +7,7 @@ from logger_config import logger
 def add_product():
     try:
         product_id = int(input("Enter Product ID: "))
-        name = input("Enter Product Name: ") 
+        name = input("Enter Product Name: ")
         price = float(input("Enter Product Price: "))
         quantity = int(input("Enter Quantity: "))
 
@@ -29,7 +25,7 @@ def add_product():
         # Insert new product into SQLite
         cursor.execute(
             "INSERT INTO products (id, name, price, quantity) VALUES (?, ?, ?, ?)",
-            (product_id, name, price, quantity)
+            (product_id, name, price, quantity),
         )
         conn.commit()
         conn.close()
@@ -78,7 +74,9 @@ def search_product():
 
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
-        cursor.execute("SELECT id, name, price, quantity FROM products WHERE id = ?", (product_id,))
+        cursor.execute(
+            "SELECT id, name, price, quantity FROM products WHERE id = ?", (product_id,)
+        )
         row = cursor.fetchone()
         conn.close()
 
@@ -116,7 +114,7 @@ def update_product():
 
         cursor.execute(
             "UPDATE products SET name = ?, price = ?, quantity = ? WHERE id = ?",
-            (name, price, quantity, product_id)
+            (name, price, quantity, product_id),
         )
         conn.commit()
         conn.close()
@@ -154,4 +152,4 @@ def delete_product():
         print("Invalid Product ID.")
         logger.warning("Invalid Product ID entered.")
     except sqlite3.Error as e:
-        print(f"Database error: {e}") 
+        print(f"Database error: {e}")
