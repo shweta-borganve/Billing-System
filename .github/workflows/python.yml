@@ -57,5 +57,5 @@ jobs:
       - name: Run unit tests
         run: |
           echo "=== Running unit tests ==="
-          python -m unittest test_main.py -v --tb=short || (echo "❌ Tests failed" && exit 1)
+          python -m unittest test_main.py -v || (echo "❌ Tests failed" && exit 1)
           echo "✅ All tests passed"
