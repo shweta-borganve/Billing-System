@@ -51,7 +51,7 @@ jobs:
       - name: Compile Python files
         run: |
           echo "=== Compiling Python files ==="
-          python -m compileall -v . || (echo "❌ Compilation failed" && exit 1)
+          python -m compileall . || (echo "❌ Compilation failed" && exit 1)
           echo "✅ All Python files compiled successfully"
 
       - name: Run unit tests
