@@ -1,30 +1,45 @@
-from file_handler import BILLS_FILE, load_data
+import json
+import sqlite3
+
+from config import DB_NAME
 from logger_config import logger
 
 
 def view_bill_history():
-    bills = load_data(BILLS_FILE)
+    """Fetch and display all past bills from the SQLite database."""
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, date, total_amount, items FROM bills")
+        rows = cursor.fetchall()
+        conn.close()
 
-    if not bills:
-        print("No bill history available.")
-        logger.warning("Bill history requested but no bills found.")
-        return
+        if not rows:
+            print("No bill history available.")
+            logger.warning("No bill history available to display.")
+            return
 
-    print("\n===== Bill History =====")
+        print("\n===== BILL HISTORY =====")
+        for row in rows:
+            bill_id, date, total_amount, items_data = row
+            try:
+                if isinstance(items_data, str):
+                    items_data = json.loads(items_data)
+            except json.JSONDecodeError:
+                items_data = []
 
-    for bill in bills:
-        print(f"\nBill ID: {bill.get('bill_id', 'N/A')}")
-        print(f"Date: {bill.get('date', 'N/A')}")
-
-        items = bill.get("items", [])
-        for item in items:
-            if isinstance(item, dict):
+            print(f"\nBill ID: {bill_id} | Date: {date}")
+            print("-" * 35)
+            for item in items_data:
                 name = item.get("name", "Unknown")
                 qty = item.get("quantity", 0)
-                amount = item.get("amount", 0.0)
-                print(f"{name} x {qty} = ₹{amount:.2f}")
-            else:
-                # Fallback if an item was accidentally saved as a raw string
-                print(f"- {item}")
+                amount = item.get("amount", 0)
+                print(f"  - {name} x {qty} = ₹{amount:.2f}")
+            print(f"Total Amount: ₹{total_amount:.2f}")
+            print("-" * 35)
 
-        print(f"Total: ₹{bill.get('total', 0.0):.2f}")
+        logger.info("Bill history viewed successfully.")
+
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        logger.error(f"Error viewing bill history: {e}")

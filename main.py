@@ -1,5 +1,6 @@
 import sqlite3
 
+from analytics import generate_sales_report
 from auth import login
 from billing import generate_bill
 from config import DB_NAME
@@ -28,7 +29,7 @@ def check_and_display_low_stock(threshold=5):
 
         if low_stock_items:
             print("\n" + "=" * 50)
-            print("⚠️  WARNING: The following items are low in stock! ⚠️")
+            print("WARNING: The following items are low in stock!")
             for name, qty in low_stock_items:
                 print(f"   • {name}: only {qty} left!")
             print("=" * 50 + "\n")
@@ -63,7 +64,8 @@ def main():
         print("6. Generate Bill")
         print("7. View Bill History")
         print("8. Check Low Stock Alerts")
-        print("9. Exit")
+        print("9. Sales Analytics & Reporting")
+        print("10. Exit")
 
         try:
             choice = int(input("Enter your choice: "))
@@ -85,11 +87,13 @@ def main():
             elif choice == 8:
                 check_and_display_low_stock()
             elif choice == 9:
+                generate_sales_report()
+            elif choice == 10:
                 print("Thank you for using Billing System!")
                 logger.info("Application exited.")
                 break
             else:
-                print("Invalid choice! Please enter a number between 1 and 9.")
+                print("Invalid choice! Please enter a number between 1 and 10.")
                 logger.warning(f"Invalid menu choice entered: {choice}")
 
         except ValueError:
