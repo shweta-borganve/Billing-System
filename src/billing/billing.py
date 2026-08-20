@@ -2,11 +2,11 @@ import json
 import sqlite3
 from datetime import datetime, timezone
 
-from config import DB_NAME
-from db_operations import update_product_quantity
-from file_handler import PRODUCTS_FILE, load_data
-from logger_config import logger
-from pdf_export import generate_pdf_receipt  # <-- Import PDF generator
+from src.billing.pdf_export import generate_pdf_receipt  # <-- Import PDF generator
+from src.database.db_operations import update_product_quantity
+from src.services.config import DB_NAME
+from src.services.file_handler import PRODUCTS_FILE, load_data
+from src.services.logger_config import logger
 
 
 def check_low_stock_in_list(products, threshold=5):

@@ -2,8 +2,8 @@ import json
 import sqlite3
 from collections import Counter
 
-from config import DB_NAME
-from logger_config import logger
+from src.services.config import DB_NAME
+from src.services.logger_config import logger
 
 
 def generate_sales_report():

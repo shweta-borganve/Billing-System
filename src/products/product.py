@@ -1,7 +1,7 @@
 import sqlite3
 
-from config import DB_NAME
-from logger_config import logger
+from src.services.config import DB_NAME
+from src.services.logger_config import logger
 
 
 def add_product():

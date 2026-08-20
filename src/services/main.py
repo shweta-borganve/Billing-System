@@ -1,19 +1,19 @@
 import sqlite3
 
-from analytics import generate_sales_report
-from auth import login
-from billing import generate_bill
-from config import DB_NAME
-from db_operations import initialize_database
-from history import view_bill_history
-from logger_config import logger
-from product import (
+from src.auth.auth import login
+from src.billing.analytics import generate_sales_report
+from src.billing.billing import generate_bill
+from src.database.db_operations import initialize_database
+from src.products.product import (
     add_product,
     delete_product,
     search_product,
     update_product,
     view_products,
 )
+from src.services.config import DB_NAME
+from src.services.history import view_bill_history
+from src.services.logger_config import logger
 
 
 def check_and_display_low_stock(threshold=5):

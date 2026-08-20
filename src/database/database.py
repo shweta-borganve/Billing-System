@@ -15,24 +15,28 @@ def initialize_database():
     cursor = conn.cursor()
 
     # 1. Create Products Table
-    cursor.execute("""
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS products (
             product_id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
             price REAL NOT NULL,
             quantity INTEGER NOT NULL
         )
-    """)
+    """
+    )
 
     # 2. Create Bills Table
-    cursor.execute("""
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS bills (
             bill_id INTEGER PRIMARY KEY AUTOINCREMENT,
             bill_details TEXT NOT NULL,
             total_amount REAL NOT NULL,
             timestamp TEXT NOT NULL
         )
-    """)
+    """
+    )
 
     # Save (commit) the changes and close the connection
     conn.commit()

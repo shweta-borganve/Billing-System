@@ -22,24 +22,18 @@ A robust, console-based billing and inventory management system built in Python,
 
 ---
 
-## 📁 Project Structure
-
 ```text
 Billing-System/
-│
-├── billing.db          # SQLite database storing products and bills
-├── main.py             # Entry point and CLI menu loop
-├── auth.py             # Admin authentication logic
-├── database.py         # SQLite connection and table creation setup
-├── db_operations.py    # Database CRUD operations (Products & Bills)
-├── product.py          # Product domain logic
-├── billing.py          # Billing and checkout calculation logic
-├── history.py          # Bill history retrieval logic
-├── file_handler.py     # Utility functions
-├── logger_config.py    # Logging configuration
-├── test_main.py        # Automated test suite
-├── requirements.txt    # Project dependencies
-└── README.md           # Project documentation
+├── src/
+│   ├── auth/          # Authentication, user roles, and security rules
+│   ├── billing/       # Billing calculations, analytics, and PDF exports
+│   ├── database/      # Database connections, models, and CRUD operations
+│   ├── products/      # Product inventory and catalog management
+│   └── services/      # Core application logic, configuration, and main entry point
+├── tests/             # Automated test suite and shared fixtures
+├── logs/              # Application execution logs
+├── requirements.txt   # Project dependencies
+└── pyproject.toml     # Pytest and tool configurations 
 ```
 
 > Generated files such as `__pycache__`, `.pyc` files, and log files are excluded from Git using `.gitignore`.
