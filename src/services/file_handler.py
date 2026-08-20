@@ -1,9 +1,9 @@
 import json
 import sqlite3
 
-from config import DB_NAME
-from db_operations import get_all_bills
-from logger_config import logger
+from src.database.db_operations import get_all_bills
+from src.services.config import DB_NAME
+from src.services.logger_config import logger
 
 # Compatibility constants for modules still referencing file paths
 BILLS_FILE = "data/bills.json"

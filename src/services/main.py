@@ -1,18 +1,19 @@
 import sqlite3
 
-from auth import login
-from billing import generate_bill
-from config import DB_NAME
-from db_operations import initialize_database
-from history import view_bill_history
-from logger_config import logger
-from product import (
+from src.auth.auth import login
+from src.billing.analytics import generate_sales_report
+from src.billing.billing import generate_bill
+from src.database.db_operations import initialize_database
+from src.products.product import (
     add_product,
     delete_product,
     search_product,
     update_product,
     view_products,
 )
+from src.services.config import DB_NAME
+from src.services.history import view_bill_history
+from src.services.logger_config import logger
 
 
 def check_and_display_low_stock(threshold=5):
@@ -28,7 +29,7 @@ def check_and_display_low_stock(threshold=5):
 
         if low_stock_items:
             print("\n" + "=" * 50)
-            print("⚠️  WARNING: The following items are low in stock! ⚠️")
+            print("WARNING: The following items are low in stock!")
             for name, qty in low_stock_items:
                 print(f"   • {name}: only {qty} left!")
             print("=" * 50 + "\n")
@@ -63,7 +64,8 @@ def main():
         print("6. Generate Bill")
         print("7. View Bill History")
         print("8. Check Low Stock Alerts")
-        print("9. Exit")
+        print("9. Sales Analytics & Reporting")
+        print("10. Exit")
 
         try:
             choice = int(input("Enter your choice: "))
@@ -85,11 +87,13 @@ def main():
             elif choice == 8:
                 check_and_display_low_stock()
             elif choice == 9:
+                generate_sales_report()
+            elif choice == 10:
                 print("Thank you for using Billing System!")
                 logger.info("Application exited.")
                 break
             else:
-                print("Invalid choice! Please enter a number between 1 and 9.")
+                print("Invalid choice! Please enter a number between 1 and 10.")
                 logger.warning(f"Invalid menu choice entered: {choice}")
 
         except ValueError:

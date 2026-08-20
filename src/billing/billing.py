@@ -2,10 +2,11 @@ import json
 import sqlite3
 from datetime import datetime, timezone
 
-from config import DB_NAME
-from db_operations import update_product_quantity
-from file_handler import PRODUCTS_FILE, load_data
-from logger_config import logger
+from src.billing.pdf_export import generate_pdf_receipt  # <-- Import PDF generator
+from src.database.db_operations import update_product_quantity
+from src.services.config import DB_NAME
+from src.services.file_handler import PRODUCTS_FILE, load_data
+from src.services.logger_config import logger
 
 
 def check_low_stock_in_list(products, threshold=5):
@@ -75,7 +76,7 @@ def generate_bill():
                     # Check if this item is now low in stock after purchase
                     if new_qty <= 5:
                         print(
-                            f"⚠️  ALERT: {product['name']} is now running low on stock ({new_qty} left)! ⚠️"
+                            f"ALERT: {product['name']} is now running low on stock ({new_qty} left)!"
                         )
                         logger.warning(
                             f"Low stock alert triggered for product {product['name']}: {new_qty} remaining."
@@ -122,9 +123,18 @@ def generate_bill():
         print(f"Total: ₹{total:.2f}")
         logger.info(f"Bill generated successfully: {bill_id}")
 
+        # --- Automatically Generate PDF Receipt ---
+        pdf_filename = f"bill_{bill_id}.pdf"
+        generate_pdf_receipt(pdf_filename, bill_id, date_str, items, total)
+        print(f"PDF receipt saved successfully as '{pdf_filename}'")
+        logger.info(f"PDF receipt exported successfully: {pdf_filename}")
+
     except sqlite3.Error as e:
         print(f"Database error while saving bill: {e}")
         logger.error(f"Database error saving bill: {e}")
+    except Exception as e:  # noqa: BLE001
+        print(f"Error generating PDF receipt: {e}")
+        logger.error(f"Error generating PDF receipt for bill {bill_id}: {e}")
 
 
 def view_bill_history():
