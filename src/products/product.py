@@ -7,9 +7,27 @@ from src.services.logger_config import logger
 def add_product():
     try:
         product_id = int(input("Enter Product ID: "))
-        name = input("Enter Product Name: ")
+        name = input("Enter Product Name: ").strip()
+
+        # Validation: Ensure product name is not empty
+        if not name:
+            print("Product name cannot be empty.")
+            logger.warning("Attempted to add product with empty name.")
+            return
+
         price = float(input("Enter Product Price: "))
+        # Validation: Price cannot be negative or zero
+        if price <= 0:
+            print("Price must be greater than 0.")
+            logger.warning(f"Invalid price entered: {price}")
+            return
+
         quantity = int(input("Enter Quantity: "))
+        # Validation: Quantity cannot be negative
+        if quantity < 0:
+            print("Quantity cannot be negative.")
+            logger.warning(f"Invalid quantity entered: {quantity}")
+            return
 
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
@@ -31,11 +49,13 @@ def add_product():
         conn.close()
 
         print("Product added successfully.")
-        logger.info(f"Product added: {name}")
+        logger.info(f"Product added: {name} (ID: {product_id})")
 
     except ValueError:
-        print("Invalid input.")
-        logger.warning("Invalid input while adding product.")
+        print(
+            "Invalid input. Please enter correct numeric values for ID, price, and quantity."
+        )
+        logger.warning("Invalid input type while adding product.")
     except sqlite3.Error as e:
         print(f"Database error: {e}")
         logger.error(f"Database error while adding product: {e}")
@@ -100,15 +120,30 @@ def update_product():
     try:
         product_id = int(input("Enter Product ID to update: "))
 
-        name = input("Enter new name: ")
+        name = input("Enter new name: ").strip()
+        if not name:
+            print("Product name cannot be empty.")
+            logger.warning("Attempted to update product with empty name.")
+            return
+
         price = float(input("Enter new price: "))
+        if price <= 0:
+            print("Price must be greater than 0.")
+            logger.warning(f"Invalid price entered during update: {price}")
+            return
+
         quantity = int(input("Enter new quantity: "))
+        if quantity < 0:
+            print("Quantity cannot be negative.")
+            logger.warning(f"Invalid quantity entered during update: {quantity}")
+            return
 
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
         cursor.execute("SELECT id FROM products WHERE id = ?", (product_id,))
         if not cursor.fetchone():
             print("Product not found.")
+            logger.close() if hasattr(logger, "close") else None
             conn.close()
             return
 
@@ -123,7 +158,7 @@ def update_product():
         logger.info(f"Product updated: {product_id}")
 
     except ValueError:
-        print("Invalid input.")
+        print("Invalid input. Please enter correct numeric values.")
         logger.warning("Invalid input while updating product.")
     except sqlite3.Error as e:
         print(f"Database error: {e}")
