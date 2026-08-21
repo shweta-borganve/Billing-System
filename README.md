@@ -1,39 +1,35 @@
-# 🛒 Python CLI BILLING SYSTEM
+# Python Billing System
 
-A robust, console-based billing and inventory management system built in Python, backed by a **SQLite database**, and equipped with automated unit testing.
-
-## 🚀 FEATURES
-
-* **Admin Authentication:** Secure login system to access admin privileges.
-* **Product Management:** Add, view, search, update, and delete products easily.
-* **Inventory Control:** Automatic stock reduction when a bill is generated.
-* **Billing System:** Generate itemized bills with total cost calculations and persistence.
-* **Transaction History:** View past generated bills and sales records.
-* **Database Powered:** Built with **SQLite (`billing.db`)** for fast, reliable data persistence.
-* **Automated Testing:** Fully covered test suite using Python's `unittest` framework.
+A robust, modular Python-based billing management application designed with a clean architecture, role-based authentication, database persistence, and a comprehensive test suite.
 
 ---
 
-## 🛠️ Tech Stack
+## Features
 
-* **Language:** Python 3
-* **Database:** SQLite3
-* **Testing:** `unittest`, `unittest.mock`
+- **User Authentication:** Secure role-based login and session handling.
+- **Product & Inventory Management:** Add, update, track, and manage items seamlessly.
+- **Billing & Analytics:** Compute totals, handle taxes, and generate structured reports.
+- **Database Operations:** Persistent data storage using SQLite / database utilities.
+- **Automated Testing:** Standardized test suite organized under the `tests/` directory using `pytest`.
 
 ---
+
+## Project Structure
 
 ```text
 Billing-System/
 ├── src/
-│   ├── auth/          # Authentication, user roles, and security rules
-│   ├── billing/       # Billing calculations, analytics, and PDF exports
-│   ├── database/      # Database connections, models, and CRUD operations
-│   ├── products/      # Product inventory and catalog management
-│   └── services/      # Core application logic, configuration, and main entry point
-├── tests/             # Automated test suite and shared fixtures
-├── logs/              # Application execution logs
-├── requirements.txt   # Project dependencies
-└── pyproject.toml     # Pytest and tool configurations 
+│   ├── auth/         # Authentication modules
+│   ├── billing/      # Billing logic, analytics, and PDF exports
+│   ├── database/     # DB configuration and operations
+│   ├── products/     # Product inventory management
+│   └── services/     # Core services, config, logging, and main application
+├── tests/            # Test suite (including test_main.py)
+├── .env.example      # Environment variables template
+├── .pre-commit-config.yaml # Pre-commit hooks configuration
+├── pyproject.toml    # Project metadata and tool configurations
+├── requirements.txt  # Project dependencies
+└── README.md 
 ```
 
 > Generated files such as `__pycache__`, `.pyc` files, and log files are excluded from Git using `.gitignore`.
