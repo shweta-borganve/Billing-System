@@ -10,7 +10,7 @@ venv/
 .venv/
 
 # VS Code
-.vscode/ 
+.vscode/
 
-.env 
-venv/ 
+.env
+venv/

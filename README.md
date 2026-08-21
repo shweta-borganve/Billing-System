@@ -33,7 +33,7 @@ Billing-System/
 ├── tests/             # Automated test suite and shared fixtures
 ├── logs/              # Application execution logs
 ├── requirements.txt   # Project dependencies
-└── pyproject.toml     # Pytest and tool configurations 
+└── pyproject.toml     # Pytest and tool configurations
 ```
 
 > Generated files such as `__pycache__`, `.pyc` files, and log files are excluded from Git using `.gitignore`.
@@ -379,4 +379,4 @@ Through this project, I practiced:
 
 **Shweta Boraganve**
 
-GitHub: https://github.com/shweta-borganve 
+GitHub: https://github.com/shweta-borganve
