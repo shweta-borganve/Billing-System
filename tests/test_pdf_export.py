@@ -1,11 +1,12 @@
 import os
+
 from src.billing.pdf_export import generate_pdf_receipt
 
 
 def test_generate_pdf_receipt(tmp_path):
     """Test generating a PDF receipt successfully."""
     pdf_file = tmp_path / "test_receipt.pdf"
-    
+
     bill_id = 101
     date_str = "2026-03-31 12:00:00"
     items = [
@@ -19,4 +20,4 @@ def test_generate_pdf_receipt(tmp_path):
 
     # Assertions
     assert os.path.exists(pdf_file)
-    assert os.path.getsize(pdf_file) > 0 
+    assert os.path.getsize(pdf_file) > 0

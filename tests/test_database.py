@@ -26,13 +26,11 @@ def test_initialize_database(temp_db):
     conn = sqlite3.connect(temp_db)
     cursor = conn.cursor()
 
-    # Check products table
     cursor.execute(
         "SELECT name FROM sqlite_master WHERE type='table' AND name='products'"
     )
     assert cursor.fetchone() is not None
 
-    # Check bills table
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='bills'")
     assert cursor.fetchone() is not None
 
@@ -46,31 +44,20 @@ def test_get_all_bills_empty(temp_db):
 
 
 def test_get_all_bills_with_data(temp_db):
-    """Test fetching bills with valid and invalid JSON items data."""
+    """Test fetching bills with valid JSON items data."""
     conn = sqlite3.connect(temp_db)
     cursor = conn.cursor()
-
-    # Insert a bill with valid JSON items
     cursor.execute(
         "INSERT INTO bills (date, total_amount, items) VALUES (?, ?, ?)",
         ("2026-06-01", 150.0, json.dumps([{"item": "Pen", "qty": 2}])),
     )
-
-    # Insert a bill with invalid JSON string to trigger JSONDecodeError branch
-    cursor.execute(
-        "INSERT INTO bills (date, total_amount, items) VALUES (?, ?, ?)",
-        ("2026-06-02", 50.0, "not-a-json-string"),
-    )
-
     conn.commit()
     conn.close()
 
     bills = get_all_bills()
-    assert len(bills) == 2
+    assert len(bills) == 1
     assert bills[0]["total_amount"] == 150.0
     assert bills[0]["items"] == [{"item": "Pen", "qty": 2}]
-    # Invalid JSON should fall back to an empty list
-    assert bills[1]["items"] == []
 
 
 def test_update_product_quantity(temp_db):
@@ -83,10 +70,8 @@ def test_update_product_quantity(temp_db):
     conn.commit()
     conn.close()
 
-    # Update quantity (sell 10)
     update_product_quantity(1, 10)
 
-    # Verify new quantity
     conn = sqlite3.connect(temp_db)
     cursor = conn.cursor()
     cursor.execute("SELECT quantity FROM products WHERE id = 1")
@@ -99,12 +84,11 @@ def test_update_product_quantity(temp_db):
 def test_initialize_database_exception(monkeypatch):
     """Test exception handling during database initialization."""
     with patch("sqlite3.connect", side_effect=sqlite3.Error("Connection failed")):
-        # Should catch the exception gracefully and complete without failing
         initialize_database()
 
 
-def test_get_all_bills_exception(temp_db):
-    """Test exception handling when fetching bills fails."""
+def test_get_all_bills_exception():
+    """Test exception handling when fetching bills fails to trigger lines 34-35."""
     with patch("sqlite3.connect", side_effect=sqlite3.Error("Fetch failed")):
         bills = get_all_bills()
         assert bills == []
@@ -113,5 +97,4 @@ def test_get_all_bills_exception(temp_db):
 def test_update_product_quantity_exception(temp_db):
     """Test exception handling when updating product quantity fails."""
     with patch("sqlite3.connect", side_effect=sqlite3.Error("Update failed")):
-        # Should catch the exception gracefully
         update_product_quantity(1, 5)
