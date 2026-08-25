@@ -1,5 +1,6 @@
 import json
 import sqlite3
+from unittest.mock import patch
 
 import pytest
 
@@ -93,3 +94,24 @@ def test_update_product_quantity(temp_db):
     conn.close()
 
     assert row[0] == 90
+
+
+def test_initialize_database_exception(monkeypatch):
+    """Test exception handling during database initialization."""
+    with patch("sqlite3.connect", side_effect=sqlite3.Error("Connection failed")):
+        # Should catch the exception gracefully and complete without failing
+        initialize_database()
+
+
+def test_get_all_bills_exception(temp_db):
+    """Test exception handling when fetching bills fails."""
+    with patch("sqlite3.connect", side_effect=sqlite3.Error("Fetch failed")):
+        bills = get_all_bills()
+        assert bills == []
+
+
+def test_update_product_quantity_exception(temp_db):
+    """Test exception handling when updating product quantity fails."""
+    with patch("sqlite3.connect", side_effect=sqlite3.Error("Update failed")):
+        # Should catch the exception gracefully
+        update_product_quantity(1, 5)
