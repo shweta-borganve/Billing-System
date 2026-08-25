@@ -1,13 +1,13 @@
 import json
 import sqlite3
 
-from src.services import config  # <-- Updated to import config module
+from src.services import config
 
 
 def initialize_database():
     """Initialize the SQLite database and create required tables if they don't exist."""
     try:
-        conn = sqlite3.connect(config.DB_NAME)  # <-- Updated to use config.DB_NAME
+        conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
 
         # Create products table
@@ -40,7 +40,7 @@ def initialize_database():
 def get_all_bills():
     """Fetch all bills from the SQLite database."""
     try:
-        conn = sqlite3.connect(config.DB_NAME)  # <-- Updated to use config.DB_NAME
+        conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
         cursor.execute("SELECT id, date, total_amount, items FROM bills")
         rows = cursor.fetchall()
@@ -71,7 +71,7 @@ def get_all_bills():
 def update_product_quantity(product_id, quantity_sold):
     """Reduce product quantity in the database after a sale."""
     try:
-        conn = sqlite3.connect(config.DB_NAME)  # <-- Updated to use config.DB_NAME
+        conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
         cursor.execute(
             "UPDATE products SET quantity = quantity - ? WHERE id = ?",
@@ -80,4 +80,4 @@ def update_product_quantity(product_id, quantity_sold):
         conn.commit()
         conn.close()
     except sqlite3.Error as e:
-        print(f"Error updating product quantity: {e}")
+        print(f"Error updating product quantity: {e}") 
