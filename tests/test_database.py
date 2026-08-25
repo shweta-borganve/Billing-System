@@ -1,6 +1,6 @@
 import sqlite3
-import pytest
-from src.database.database import DB_NAME, get_connection, initialize_database
+
+from src.database.database import get_connection, initialize_database
 
 
 def test_get_connection(monkeypatch, tmp_path):
@@ -37,4 +37,4 @@ def test_initialize_database(monkeypatch, tmp_path):
     )
     assert cursor.fetchone() is not None
 
-    conn.close() 
+    conn.close()
