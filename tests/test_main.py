@@ -61,7 +61,4 @@ def test_main_script_execution(monkeypatch):
     """Test running main.py as a script block (__main__)."""
     monkeypatch.setattr("src.auth.auth.login", lambda: False)
     monkeypatch.setattr("sys.argv", ["main.py"])
-    try:
-        runpy.run_module("src.services.main", run_name="__main__")
-    except SystemExit:
-        pass
+    runpy.run_path("src/services/main.py", run_name="__main__")
