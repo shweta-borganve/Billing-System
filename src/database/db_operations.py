@@ -1,13 +1,13 @@
 import json
 import sqlite3
 
-from src.services.config import DB_NAME  # <-- Updated to modular path
+from src.services import config  # <-- Updated to import config module
 
 
 def initialize_database():
     """Initialize the SQLite database and create required tables if they don't exist."""
     try:
-        conn = sqlite3.connect(DB_NAME)  # <-- Updated to use DB_NAME
+        conn = sqlite3.connect(config.DB_NAME)  # <-- Updated to use config.DB_NAME
         cursor = conn.cursor()
 
         # Create products table
@@ -32,6 +32,7 @@ def initialize_database():
 
         conn.commit()
         conn.close()
+        print("Database and tables created successfully!")
     except sqlite3.Error as e:
         print(f"Error initializing database: {e}")
 
@@ -39,7 +40,7 @@ def initialize_database():
 def get_all_bills():
     """Fetch all bills from the SQLite database."""
     try:
-        conn = sqlite3.connect(DB_NAME)  # <-- Updated to use DB_NAME
+        conn = sqlite3.connect(config.DB_NAME)  # <-- Updated to use config.DB_NAME
         cursor = conn.cursor()
         cursor.execute("SELECT id, date, total_amount, items FROM bills")
         rows = cursor.fetchall()
@@ -70,7 +71,7 @@ def get_all_bills():
 def update_product_quantity(product_id, quantity_sold):
     """Reduce product quantity in the database after a sale."""
     try:
-        conn = sqlite3.connect(DB_NAME)  # <-- Updated to use DB_NAME
+        conn = sqlite3.connect(config.DB_NAME)  # <-- Updated to use config.DB_NAME
         cursor = conn.cursor()
         cursor.execute(
             "UPDATE products SET quantity = quantity - ? WHERE id = ?",

@@ -1,44 +1,36 @@
 import sqlite3
 
-# Set up database connection (this creates a file named 'billing.db' automatically)
-DB_NAME = "billing.db"
-
-
-def get_connection():
-    """Creates and returns a connection to the SQLite database."""
-    return sqlite3.connect(DB_NAME)
+from src.services import config
 
 
 def initialize_database():
-    """Creates the products and bills tables if they don't already exist."""
-    conn = get_connection()
-    cursor = conn.cursor()
+    """Initialize the SQLite database and create required tables if they don't exist."""
+    try:
+        conn = sqlite3.connect(config.DB_NAME)
+        cursor = conn.cursor()
 
-    # 1. Create Products Table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS products (
-            product_id TEXT PRIMARY KEY,
-            name TEXT NOT NULL,
-            price REAL NOT NULL,
-            quantity INTEGER NOT NULL
-        )
-    """)
+        # Create products table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS products ( 
+                id INTEGER PRIMARY KEY,
+                name TEXT NOT NULL,
+                price REAL NOT NULL,
+                quantity INTEGER NOT NULL
+            )
+        """)
 
-    # 2. Create Bills Table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS bills (
-            bill_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            bill_details TEXT NOT NULL,
-            total_amount REAL NOT NULL,
-            timestamp TEXT NOT NULL
-        )
-    """)
+        # Create bills table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS bills (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                date TEXT NOT NULL,
+                total_amount REAL NOT NULL,
+                items TEXT NOT NULL
+            )
+        """)
 
-    # Save (commit) the changes and close the connection
-    conn.commit()
-    conn.close()
-    print("Database and tables created successfully!")
-
-
-if __name__ == "__main__":
-    initialize_database()
+        conn.commit()
+        conn.close()
+        print("Database and tables created successfully!")
+    except sqlite3.Error as e:
+        print(f"Error initializing database: {e}")
