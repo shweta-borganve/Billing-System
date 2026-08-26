@@ -9,7 +9,6 @@ def execute_non_query(query, params=()):
     try:
         conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
-feature/pre-commit-hooks
 
         # Create products table
         cursor.execute(
@@ -35,9 +34,7 @@ feature/pre-commit-hooks
         """
         )
 
-
         cursor.execute(query, params)
-main
         conn.commit()
         conn.close()
     except sqlite3.Error as e:
