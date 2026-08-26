@@ -1,3 +1,4 @@
+feature/move-test-main
 # Python Billing System
 
 A robust, modular Python-based billing management application designed with a clean architecture, role-based authentication, database persistence, and a comprehensive test suite.
@@ -16,9 +17,30 @@ A robust, modular Python-based billing management application designed with a cl
 
 ## Project Structure
 
+# Billing System 🛒
+
+A Python-based billing and inventory management system featuring SQLite database integration, structured modular architecture, robust unit testing, and strict code quality enforcement.
+
+---
+
+## 🚀 Features
+
+* **Database Management:** SQLite integration for tracking products, stock levels, and historical billing records.
+* **Inventory Tracking:** Automatic product quantity updates upon completion of sales.
+* **Bill Analytics & Storage:** JSON-serialized item tracking for flexible bill history parsing and retrieval.
+* **Testing Suite:** Comprehensive unit tests implemented with `pytest` and code coverage tracking using `pytest-cov`.
+* **Code Quality & Formatting:** Adheres to Python best practices, styled with **Black** and linted with **Ruff**.
+
+---
+
+## 📂 Project Structure
+main
+
 ```text
 Billing-System/
+│
 ├── src/
+feature/move-test-main
 │   ├── auth/         # Authentication modules
 │   ├── billing/      # Billing logic, analytics, and PDF exports
 │   ├── database/     # DB configuration and operations
@@ -31,6 +53,18 @@ Billing-System/
 ├── requirements.txt  # Project dependencies
 └── README.md 
 ```
+
+│   ├── auth/            # Authentication modules
+│   ├── billing/         # Billing logic, analytics, and PDF export
+│   ├── database/        # Database initialization and operations (CRUD)
+│   ├── products/        # Product management logic
+│   ├── services/        # Core services, config, file handling, and logging
+│   └── main.py          # Application entry point
+│
+├── tests/               # Unit and integration tests (pytest)
+├── pyproject.toml       # Project metadata and tool configurations
+└── README.md            # Project documentation 
+main
 
 > Generated files such as `__pycache__`, `.pyc` files, and log files are excluded from Git using `.gitignore`.
 
