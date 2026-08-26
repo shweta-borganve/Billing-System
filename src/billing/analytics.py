@@ -2,14 +2,14 @@ import json
 import sqlite3
 from collections import Counter
 
-from src.services.config import DB_NAME
+from src.services import config
 from src.services.logger_config import logger
 
 
 def generate_sales_report():
     """Calculates and displays sales analytics and reporting from the SQLite database."""
     try:
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
 
         # Fetch total amounts and items from the SQLite bills table
