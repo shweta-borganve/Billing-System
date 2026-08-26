@@ -27,7 +27,7 @@ def test_initialize_database(temp_db):
 def test_initialize_database_error(temp_db):
     with (
         patch("sqlite3.connect", side_effect=sqlite3.Error("Init Error")),
-        patch("builtins.print"),
+        pytest.raises(sqlite3.Error, match="Init Error"),
     ):
         database.initialize_database()
 
