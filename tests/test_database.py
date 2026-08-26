@@ -1,5 +1,6 @@
 import sqlite3
 from unittest.mock import patch
+
 import pytest
 
 from src.database import database, db_operations
@@ -32,8 +33,6 @@ def test_initialize_database_error(temp_db):
         patch("sqlite3.connect", side_effect=sqlite3.Error("Init Error")),
         patch("builtins.print"),
     ):
-        # Depending on how it's handled, it should either catch or raise.
-        # If it catches, it won't throw. Let's handle both safely.
         try:
             database.initialize_database()
         except sqlite3.Error:
