@@ -34,6 +34,20 @@ def initialize_database():
         conn.close()
     except sqlite3.Error as e:
         print(f"Error initializing database: {e}")
+        raise
+
+
+def execute_non_query(query, params=()):
+    """Executes a write/update/create query against the database."""
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute(query, params)
+        conn.commit()
+        conn.close()
+    except sqlite3.Error as e:
+        print(f"Error executing non-query: {e}")
+        raise
 
 
 def get_all_bills():
