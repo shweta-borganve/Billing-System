@@ -1,36 +1,29 @@
 import sqlite3
 
 from src.services import config
+from src.services.logger_config import logger
+
+
+def get_connection():
+    """Returns a database connection."""
+    return sqlite3.connect(config.DB_NAME)
 
 
 def initialize_database():
-    """Initialize the SQLite database and create required tables if they don't exist."""
+    """Initializes the database tables."""
     try:
-        conn = sqlite3.connect(config.DB_NAME)
+        conn = get_connection()
         cursor = conn.cursor()
-
-        # Create products table
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS products ( 
-                id INTEGER PRIMARY KEY,
+            CREATE TABLE IF NOT EXISTS products (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 price REAL NOT NULL,
                 quantity INTEGER NOT NULL
             )
         """)
-
-        # Create bills table
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS bills (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                date TEXT NOT NULL,
-                total_amount REAL NOT NULL,
-                items TEXT NOT NULL
-            )
-        """)
-
         conn.commit()
         conn.close()
-        print("Database and tables created successfully!")
     except sqlite3.Error as e:
+        logger.error(f"Database initialization error: {e}")
         print(f"Error initializing database: {e}")

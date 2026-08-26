@@ -8,11 +8,10 @@ from src.services.logger_config import logger
 def view_bill_history():
     """Fetch and display all past bills from the SQLite database."""
     try:
-        conn = sqlite3.connect(config.DB_NAME)
-        cursor = conn.cursor()
-        cursor.execute("SELECT id, date, total_amount, items FROM bills")
-        rows = cursor.fetchall()
-        conn.close()
+        with sqlite3.connect(config.DB_NAME) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT id, date, total_amount, items FROM bills")
+            rows = cursor.fetchall()
 
         if not rows:
             print("No bill history available.")
