@@ -50,6 +50,20 @@ def execute_non_query(query, params=()):
         raise
 
 
+def execute_query(query, params=()):
+    """Executes a read query against the database and returns all rows."""
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute(query, params)
+        rows = cursor.fetchall()
+        conn.close()
+        return rows
+    except sqlite3.Error as e:
+        print(f"Error executing query: {e}")
+        raise
+
+
 def get_all_bills():
     """Fetch all bills from the SQLite database."""
     try:
