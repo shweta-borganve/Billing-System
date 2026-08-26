@@ -1,14 +1,15 @@
-import json
 import sqlite3
 
-from src.services.config import DB_NAME  # <-- Updated to modular path
+from src.services import config
+from src.services.logger_config import logger
 
 
-def initialize_database():
-    """Initialize the SQLite database and create required tables if they don't exist."""
+def execute_non_query(query, params=()):
+    """Executes INSERT, UPDATE, DELETE queries."""
     try:
-        conn = sqlite3.connect(DB_NAME)  # <-- Updated to use DB_NAME
+        conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
+feature/bandit-security-scanning
 
         # Create products table
         cursor.execute("""
@@ -30,53 +31,46 @@ def initialize_database():
             )
         """)
 
+
+        cursor.execute(query, params)
+main
         conn.commit()
         conn.close()
     except sqlite3.Error as e:
-        print(f"Error initializing database: {e}")
+        logger.error(f"DB Error in execute_non_query: {e}")
+        raise
+
+
+def execute_query(query, params=()):
+    """Executes SELECT queries and returns results."""
+    try:
+        conn = sqlite3.connect(config.DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute(query, params)
+        result = cursor.fetchall()
+        conn.close()
+        return result
+    except sqlite3.Error as e:
+        logger.error(f"DB Error in execute_query: {e}")
+        raise
 
 
 def get_all_bills():
-    """Fetch all bills from the SQLite database."""
+    """Retrieves all bills from the database."""
+    conn = None
     try:
-        conn = sqlite3.connect(DB_NAME)  # <-- Updated to use DB_NAME
+        conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
         cursor.execute("SELECT id, date, total_amount, items FROM bills")
         rows = cursor.fetchall()
-        bills = []
-        for row in rows:
-            bill_id, date, total_amount, items_data = row
-            try:
-                if isinstance(items_data, str):
-                    items_data = json.loads(items_data)
-            except json.JSONDecodeError:
-                items_data = []
-
-            bills.append(
-                {
-                    "id": bill_id,
-                    "date": date,
-                    "total_amount": total_amount,
-                    "items": items_data,
-                }
-            )
-        conn.close()
+        bills = [
+            {"id": r[0], "date": r[1], "total_amount": r[2], "items": r[3]}
+            for r in rows
+        ]
         return bills
     except sqlite3.Error as e:
-        print(f"Error fetching bills: {e}")
+        logger.error(f"DB Error while fetching all bills: {e}")
         return []
-
-
-def update_product_quantity(product_id, quantity_sold):
-    """Reduce product quantity in the database after a sale."""
-    try:
-        conn = sqlite3.connect(DB_NAME)  # <-- Updated to use DB_NAME
-        cursor = conn.cursor()
-        cursor.execute(
-            "UPDATE products SET quantity = quantity - ? WHERE id = ?",
-            (quantity_sold, product_id),
-        )
-        conn.commit()
-        conn.close()
-    except sqlite3.Error as e:
-        print(f"Error updating product quantity: {e}")
+    finally:
+        if conn:
+            conn.close()
