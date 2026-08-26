@@ -34,3 +34,20 @@ def initialize_database():
         print("Database and tables created successfully!")
     except sqlite3.Error as e:
         print(f"Error initializing database: {e}")
+    """Initializes the database tables."""
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS products (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                price REAL NOT NULL,
+                quantity INTEGER NOT NULL
+            )
+        """)
+        conn.commit()
+        conn.close()
+    except sqlite3.Error as e:
+        logger.error(f"Database initialization error: {e}")
+        print(f"Error initializing database: {e}")
