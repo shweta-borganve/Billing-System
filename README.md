@@ -1,46 +1,35 @@
-# 🛒 Python CLI BILLING SYSTEM
+# Billing System 🛒
 
-A robust, console-based billing and inventory management system built in Python, backed by a **SQLite database**, and equipped with automated unit testing.
-
-## 🚀 FEATURES
-
-* **Admin Authentication:** Secure login system to access admin privileges.
-* **Product Management:** Add, view, search, update, and delete products easily.
-* **Inventory Control:** Automatic stock reduction when a bill is generated.
-* **Billing System:** Generate itemized bills with total cost calculations and persistence.
-* **Transaction History:** View past generated bills and sales records.
-* **Database Powered:** Built with **SQLite (`billing.db`)** for fast, reliable data persistence.
-* **Automated Testing:** Fully covered test suite using Python's `unittest` framework.
+A Python-based billing and inventory management system featuring SQLite database integration, structured modular architecture, robust unit testing, and strict code quality enforcement.
 
 ---
 
-## 🛠️ Tech Stack
+## 🚀 Features
 
-* **Language:** Python 3
-* **Database:** SQLite3
-* **Testing:** `unittest`, `unittest.mock`
+* **Database Management:** SQLite integration for tracking products, stock levels, and historical billing records.
+* **Inventory Tracking:** Automatic product quantity updates upon completion of sales.
+* **Bill Analytics & Storage:** JSON-serialized item tracking for flexible bill history parsing and retrieval.
+* **Testing Suite:** Comprehensive unit tests implemented with `pytest` and code coverage tracking using `pytest-cov`.
+* **Code Quality & Formatting:** Adheres to Python best practices, styled with **Black** and linted with **Ruff**.
 
 ---
 
-## 📁 Project Structure
+## 📂 Project Structure
 
 ```text
 Billing-System/
 │
-├── billing.db          # SQLite database storing products and bills
-├── main.py             # Entry point and CLI menu loop
-├── auth.py             # Admin authentication logic
-├── database.py         # SQLite connection and table creation setup
-├── db_operations.py    # Database CRUD operations (Products & Bills)
-├── product.py          # Product domain logic
-├── billing.py          # Billing and checkout calculation logic
-├── history.py          # Bill history retrieval logic
-├── file_handler.py     # Utility functions
-├── logger_config.py    # Logging configuration
-├── test_main.py        # Automated test suite
-├── requirements.txt    # Project dependencies
-└── README.md           # Project documentation
-```
+├── src/
+│   ├── auth/            # Authentication modules
+│   ├── billing/         # Billing logic, analytics, and PDF export
+│   ├── database/        # Database initialization and operations (CRUD)
+│   ├── products/        # Product management logic
+│   ├── services/        # Core services, config, file handling, and logging
+│   └── main.py          # Application entry point
+│
+├── tests/               # Unit and integration tests (pytest)
+├── pyproject.toml       # Project metadata and tool configurations
+└── README.md            # Project documentation 
 
 > Generated files such as `__pycache__`, `.pyc` files, and log files are excluded from Git using `.gitignore`.
 

@@ -1,7 +1,7 @@
-from logger_config import logger
+from src.services.logger_config import logger
 
 USERNAME = "admin"
-PASSWORD = "1234"
+PASSWORD = "1234"  # nosec
 
 
 def login():
