@@ -1,15 +1,16 @@
 import sqlite3
 
-# Set up database connection (this creates a file named 'billing.db' automatically)
-DB_NAME = "billing.db"
+from src.services import config
+from src.services.logger_config import logger
 
 
 def get_connection():
-    """Creates and returns a connection to the SQLite database."""
-    return sqlite3.connect(DB_NAME)
+    """Returns a database connection."""
+    return sqlite3.connect(config.DB_NAME)
 
 
 def initialize_database():
+feature/mypy-type-checking
     """Creates the products and bills tables if they don't already exist."""
     conn = get_connection()
     cursor = conn.cursor()
@@ -42,3 +43,22 @@ def initialize_database():
 
 if __name__ == "__main__":
     initialize_database()
+
+    """Initializes the database tables."""
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS products (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                price REAL NOT NULL,
+                quantity INTEGER NOT NULL
+            )
+        """)
+        conn.commit()
+        conn.close()
+    except sqlite3.Error as e:
+        logger.error(f"Database initialization error: {e}")
+        print(f"Error initializing database: {e}")
+main

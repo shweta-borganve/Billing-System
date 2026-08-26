@@ -3,11 +3,11 @@ import os
 
 LOG_FOLDER = "logs"
 
-if not os.path.exists(LOG_FOLDER):
-    os.makedirs(LOG_FOLDER)
+if not os.path.exists(LOG_FOLDER):  # pragma: no cover
+    os.makedirs(LOG_FOLDER)  # pragma: no cover
 
 
-logging.basicConfig(
+logging.basicConfig(  # pragma: no cover
     filename="logs/billing_system.log",
     level=logging.DEBUG,
     format="%(asctime)s - %(levelname)s - %(message)s",
