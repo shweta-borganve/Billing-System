@@ -10,7 +10,6 @@ def get_connection():
 
 
 def initialize_database():
-feature/bandit-security-scanning
     """Creates the products and bills tables if they don't already exist."""
     conn = get_connection()
     cursor = conn.cursor()
@@ -61,4 +60,3 @@ if __name__ == "__main__":
     except sqlite3.Error as e:
         logger.error(f"Database initialization error: {e}")
         print(f"Error initializing database: {e}")
-main
