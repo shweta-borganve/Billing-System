@@ -1,9 +1,9 @@
 import json
 import sqlite3
 
-from config import DB_NAME
-from db_operations import get_all_bills
-from logger_config import logger
+from src.database.db_operations import get_all_bills
+from src.services import config
+from src.services.logger_config import logger
 
 # Compatibility constants for modules still referencing file paths
 BILLS_FILE = "data/bills.json"
@@ -13,7 +13,7 @@ PRODUCTS_FILE = "data/products.json"
 def load_data(filename):
     """Load data handler compatible with SQLite database."""
     try:
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
 
         if "bill" in filename.lower() or filename == BILLS_FILE:
@@ -47,11 +47,10 @@ def load_data(filename):
 def save_data(filename, data):
     """Save data to SQLite database instead of dummy files."""
     try:
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
 
         if "product" in filename.lower() or filename == PRODUCTS_FILE:
-            # Clear table and re-insert or sync data from the app list
             cursor.execute("DELETE FROM products")
             for p in data:
                 cursor.execute(
@@ -75,7 +74,7 @@ def save_bill_record(filename, items, total_amount, date):
         except json.JSONDecodeError:
             pass
 
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
         cursor.execute(
             "INSERT INTO bills (date, total_amount, items) VALUES (?, ?, ?)",
