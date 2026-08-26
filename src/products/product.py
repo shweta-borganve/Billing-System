@@ -1,11 +1,13 @@
 import sqlite3
 
-from src.services.config import DB_NAME
+from src.services import config
 from src.services.logger_config import logger
 
 
 def add_product():
+    """Adds a new product to the database."""
     try:
+feature/validation-and-logging
         product_id = int(input("Enter Product ID: "))
         name = input("Enter Product Name: ").strip()
 
@@ -29,24 +31,24 @@ def add_product():
             logger.warning(f"Invalid quantity entered: {quantity}")
             return
 
-        conn = sqlite3.connect(DB_NAME)
+        name = input("Enter product name: ").strip()
+        price = float(input("Enter product price: "))
+        quantity = int(input("Enter product quantity: "))
+    except ValueError:
+        print("Invalid input. Please enter valid numbers for price and quantity.")
+        return
+main
+
+    try:
+        conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
-
-        # Check if product ID already exists
-        cursor.execute("SELECT id FROM products WHERE id = ?", (product_id,))
-        if cursor.fetchone():
-            print("Product ID already exists.")
-            logger.warning(f"Duplicate product ID: {product_id}")
-            conn.close()
-            return
-
-        # Insert new product into SQLite
         cursor.execute(
-            "INSERT INTO products (id, name, price, quantity) VALUES (?, ?, ?, ?)",
-            (product_id, name, price, quantity),
+            "INSERT INTO products (name, price, quantity) VALUES (?, ?, ?)",
+            (name, price, quantity),
         )
         conn.commit()
         conn.close()
+feature/validation-and-logging
 
         print("Product added successfully.")
         logger.info(f"Product added: {name} (ID: {product_id})")
@@ -56,68 +58,49 @@ def add_product():
             "Invalid input. Please enter correct numeric values for ID, price, and quantity."
         )
         logger.warning("Invalid input type while adding product.")
+
+        print(f"Product '{name}' added successfully!")
+main
     except sqlite3.Error as e:
-        print(f"Database error: {e}")
         logger.error(f"Database error while adding product: {e}")
+        print(f"Error adding product: {e}")
 
 
 def view_products():
+    """Displays all products in the database."""
     try:
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
         cursor.execute("SELECT id, name, price, quantity FROM products")
-        rows = cursor.fetchall()
+        products = cursor.fetchall()
         conn.close()
 
-        if not rows:
-            print("No products available.")
-            logger.warning("No products available to display.")
-            return
+        if not products:
+            print("No products found.")
+            return []
 
-        print("\n===== Products =====")
-        for row in rows:
-            p_id, name, price, quantity = row
-            print(
-                f"ID: {p_id} | "
-                f"Name: {name} | "
-                f"Price: ₹{price} | "
-                f"Quantity: {quantity}"
-            )
+        formatted_products = []
+        for p in products:
+            prod = {"id": p[0], "name": p[1], "price": p[2], "quantity": p[3]}
+            formatted_products.append(prod)
+            print(f"ID: {p[0]} | Name: {p[1]} | Price: {p[2]} | Qty: {p[3]}")
+        return formatted_products
     except sqlite3.Error as e:
-        print(f"Database error: {e}")
-        logger.error(f"Error viewing products: {e}")
-
-
-def search_product():
-    try:
-        product_id = int(input("Enter Product ID to search: "))
-
-        conn = sqlite3.connect(DB_NAME)
-        cursor = conn.cursor()
-        cursor.execute(
-            "SELECT id, name, price, quantity FROM products WHERE id = ?", (product_id,)
-        )
-        row = cursor.fetchone()
-        conn.close()
-
-        if row:
-            p_id, name, price, quantity = row
-            print("\nProduct Found:")
-            print(f"ID: {p_id} | Name: {name} | Price: ₹{price} | Quantity: {quantity}")
-            logger.info(f"Product searched: {product_id}")
-        else:
-            print("Product not found.")
-            logger.warning(f"Product not found: {product_id}")
-
-    except ValueError:
-        print("Invalid Product ID.")
-        logger.warning("Invalid Product ID entered.")
-    except sqlite3.Error as e:
-        print(f"Database error: {e}")
+        logger.error(f"Database error while viewing products: {e}")
+        print(f"Error retrieving products: {e}")
+        return []
 
 
 def update_product():
+    """Updates an existing product's details."""
     try:
+        product_id = int(input("Enter product ID to update: "))
+    except ValueError:
+        print("Invalid product ID.")
+        return
+
+    try:
+feature/validation-and-logging
         product_id = int(input("Enter Product ID to update: "))
 
         name = input("Enter new name: ").strip()
@@ -144,8 +127,19 @@ def update_product():
         if not cursor.fetchone():
             print("Product not found.")
             logger.close() if hasattr(logger, "close") else None
+
+        conn = sqlite3.connect(config.DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM products WHERE id = ?", (product_id,))
+        if not cursor.fetchone():
+            print(f"Product with ID {product_id} not found.")
+main
             conn.close()
             return
+
+        name = input("Enter new product name: ").strip()
+        price = float(input("Enter new product price: "))
+        quantity = int(input("Enter new product quantity: "))
 
         cursor.execute(
             "UPDATE products SET name = ?, price = ?, quantity = ? WHERE id = ?",
@@ -153,38 +147,69 @@ def update_product():
         )
         conn.commit()
         conn.close()
-
-        print("Product updated successfully.")
-        logger.info(f"Product updated: {product_id}")
-
+        print(f"Product {product_id} updated successfully!")
     except ValueError:
+feature/validation-and-logging
         print("Invalid input. Please enter correct numeric values.")
         logger.warning("Invalid input while updating product.")
+
+        print("Invalid numerical input.")
+main
     except sqlite3.Error as e:
-        print(f"Database error: {e}")
+        logger.error(f"Database error while updating product: {e}")
+        print(f"Error updating product: {e}")
 
 
 def delete_product():
+    """Deletes a product by ID."""
     try:
-        product_id = int(input("Enter Product ID to delete: "))
+        product_id = int(input("Enter product ID to delete: "))
+    except ValueError:
+        print("Invalid product ID.")
+        return
 
-        conn = sqlite3.connect(DB_NAME)
+    try:
+        conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
-        cursor.execute("SELECT id FROM products WHERE id = ?", (product_id,))
-        if not cursor.fetchone():
-            print("Product not found.")
-            conn.close()
-            return
-
         cursor.execute("DELETE FROM products WHERE id = ?", (product_id,))
         conn.commit()
+        deleted = cursor.rowcount
         conn.close()
 
-        print("Product deleted successfully.")
-        logger.info(f"Product deleted: {product_id}")
-
-    except ValueError:
-        print("Invalid Product ID.")
-        logger.warning("Invalid Product ID entered.")
+        if deleted > 0:
+            print(f"Product {product_id} deleted successfully.")
+        else:
+            print(f"Product {product_id} not found.")
     except sqlite3.Error as e:
-        print(f"Database error: {e}")
+        logger.error(f"Database error while deleting product: {e}")
+        print(f"Error deleting product: {e}")
+
+
+def search_product():
+    """Searches for products by name."""
+    keyword = input("Enter search keyword: ").strip()
+    try:
+        conn = sqlite3.connect(config.DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT id, name, price, quantity FROM products WHERE name LIKE ?",
+            (f"%{keyword}%",),
+        )
+        products = cursor.fetchall()
+        conn.close()
+
+        if not products:
+            print("No matching products found.")
+            return []
+
+        formatted = []
+        for p in products:
+            formatted.append(
+                {"id": p[0], "name": p[1], "price": p[2], "quantity": p[3]}
+            )
+            print(f"ID: {p[0]} | Name: {p[1]} | Price: {p[2]} | Qty: {p[3]}")
+        return formatted
+    except sqlite3.Error as e:
+        logger.error(f"Database error while searching product: {e}")
+        print(f"Error searching product: {e}")
+        return []
