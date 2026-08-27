@@ -12,7 +12,7 @@ def execute_non_query(query, params=()):
     try:
         conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
-feature/mypy-type-checking
+
 
         # Create products table
         cursor.execute("""
@@ -36,7 +36,7 @@ feature/mypy-type-checking
 
 
         cursor.execute(query, params)
-main
+
         conn.commit()
         conn.close()
     except sqlite3.Error as e:
