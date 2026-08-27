@@ -1,3 +1,4 @@
+import json
 import sqlite3
 from typing import Any
 
@@ -7,12 +8,13 @@ from src.services.logger_config import logger
 
 def initialize_database() -> None:
     """Initialize the SQLite database and create required tables if they don't exist."""
+
+
 def execute_non_query(query, params=()):
     """Executes INSERT, UPDATE, DELETE queries."""
     try:
         conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
-
 
         # Create products table
         cursor.execute("""
@@ -33,7 +35,6 @@ def execute_non_query(query, params=()):
                 items TEXT NOT NULL
             )
         """)
-
 
         cursor.execute(query, params)
 
@@ -58,20 +59,15 @@ def execute_query(query, params=()):
         raise
 
 
-def get_all_bills():
-    """Retrieves all bills from the database."""
-    conn = None
 def get_all_bills() -> list[dict[str, Any]]:
     """Fetch all bills from the SQLite database."""
+    conn = None
     try:
         conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
         cursor.execute("SELECT id, date, total_amount, items FROM bills")
         rows = cursor.fetchall()
-        bills = [
-            {"id": r[0], "date": r[1], "total_amount": r[2], "items": r[3]}
-            for r in rows
-        ]
+
         bills: list[dict[str, Any]] = []
         for row in rows:
             bill_id, date, total_amount, items_data = row
@@ -89,7 +85,6 @@ def get_all_bills() -> list[dict[str, Any]]:
                     "items": items_data,
                 }
             )
-        conn.close()
         return bills
     except sqlite3.Error as e:
         logger.error(f"DB Error while fetching all bills: {e}")
@@ -102,7 +97,7 @@ def get_all_bills() -> list[dict[str, Any]]:
 def update_product_quantity(product_id: int, quantity_sold: int) -> None:
     """Reduce product quantity in the database after a sale."""
     try:
-        conn = sqlite3.connect(DB_NAME)  # <-- Updated to use DB_NAME
+        conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
         cursor.execute(
             "UPDATE products SET quantity = quantity - ? WHERE id = ?",
@@ -111,4 +106,5 @@ def update_product_quantity(product_id: int, quantity_sold: int) -> None:
         conn.commit()
         conn.close()
     except sqlite3.Error as e:
+        logger.error(f"Error updating product quantity: {e}")
         print(f"Error updating product quantity: {e}")
