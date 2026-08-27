@@ -1,3 +1,22 @@
+feature/pytest-config
+BILLING SYSTEM
+
+A robust, modular Python-based billing management application designed with a clean architecture, role-based authentication, database persistence, and a comprehensive test suite.
+
+---
+
+## Features
+
+- **User Authentication:** Secure role-based login and session handling.
+- **Product & Inventory Management:** Add, update, track, and manage items seamlessly.
+- **Billing & Analytics:** Compute totals, handle taxes, and generate structured reports.
+- **Database Operations:** Persistent data storage using SQLite / database utilities.
+- **Automated Testing:** Standardized test suite organized under the `tests/` directory using `pytest`.
+
+---
+
+## Project Structure
+
 # Billing System 🛒
 
 A Python-based billing and inventory management system featuring SQLite database integration, structured modular architecture, robust unit testing, and strict code quality enforcement.
@@ -15,11 +34,26 @@ A Python-based billing and inventory management system featuring SQLite database
 ---
 
 ## 📂 Project Structure
+main
 
 ```text
 Billing-System/
 │
 ├── src/
+feature/pytest-config
+│   ├── auth/         # Authentication modules
+│   ├── billing/      # Billing logic, analytics, and PDF exports
+│   ├── database/     # DB configuration and operations
+│   ├── products/     # Product inventory management
+│   └── services/     # Core services, config, logging, and main application
+├── tests/            # Test suite (including test_main.py)
+├── .env.example      # Environment variables template
+├── .pre-commit-config.yaml # Pre-commit hooks configuration
+├── pyproject.toml    # Project metadata, linter, and pytest configurations
+├── requirements.txt  # Project dependencies
+└── README.md 
+```
+
 │   ├── auth/            # Authentication modules
 │   ├── billing/         # Billing logic, analytics, and PDF export
 │   ├── database/        # Database initialization and operations (CRUD)
@@ -30,6 +64,7 @@ Billing-System/
 ├── tests/               # Unit and integration tests (pytest)
 ├── pyproject.toml       # Project metadata and tool configurations
 └── README.md            # Project documentation 
+main
 
 > Generated files such as `__pycache__`, `.pyc` files, and log files are excluded from Git using `.gitignore`.
 

@@ -13,4 +13,4 @@ venv/
 .vscode/ 
 
 .env 
-venv/ 
+venv/ .coverage
