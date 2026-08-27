@@ -1,11 +1,10 @@
-feature/auth-and-roles
 from unittest.mock import patch
 
 from src.auth.auth import login, require_role
 
 
 def test_login_success_admin():
-    # Simulate user inputs for username and password
+    """Test successful login for admin user."""
     with patch("builtins.input", side_effect=["admin", "1234"]):
         user = login()
         assert user is not None
@@ -14,6 +13,7 @@ def test_login_success_admin():
 
 
 def test_login_success_staff():
+    """Test successful login for staff user."""
     with patch("builtins.input", side_effect=["staff", "abcd"]):
         user = login()
         assert user is not None
@@ -22,14 +22,17 @@ def test_login_success_staff():
 
 
 def test_login_failure():
+    """Test failed login with incorrect credentials."""
     with patch("builtins.input", side_effect=["admin", "wrongpassword"]):
         user = login()
         assert user is None
 
 
 def test_require_role_allowed():
+    """Test that an allowed role can execute a protected function."""
+
     @require_role("admin")
-    def dummy_admin_action():
+    def dummy_admin_action(user=None):
         return "Success"
 
     admin_user = {"username": "admin", "role": "admin"}
@@ -38,31 +41,12 @@ def test_require_role_allowed():
 
 
 def test_require_role_denied():
+    """Test that a restricted role is denied access."""
+
     @require_role("admin")
-    def dummy_admin_action():
+    def dummy_admin_action(user=None):
         return "Success"
 
     staff_user = {"username": "staff", "role": "staff"}
     result = dummy_admin_action(staff_user)
     assert result is None
-
-from src.auth.auth import login
-
-
-def test_login_success(monkeypatch):
-    """Test successful login with correct username and password."""
-    inputs = iter(["admin", "1234"])
-    monkeypatch.setattr("builtins.input", lambda _: next(inputs))
-
-    result = login()
-    assert result is True
-
-
-def test_login_failure(monkeypatch):
-    """Test failed login with incorrect credentials."""
-    inputs = iter(["wrong_user", "wrong_pass"])
-    monkeypatch.setattr("builtins.input", lambda _: next(inputs))
-
-    result = login()
-    assert result is False
-main
