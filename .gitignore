@@ -12,5 +12,10 @@ venv/
 # VS Code
 .vscode/
 
+feature/pre-commit-hooks
 .env
 venv/
+
+.env 
+venv/ .coverage
+main
