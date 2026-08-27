@@ -11,7 +11,8 @@ def initialize_database() -> None:
 
 
 def execute_non_query(query, params=()):
-    """Executes INSERT, UPDATE, DELETE queries."""
+    """Executes a write/update/create query against the database."""
+    conn = None
     try:
         conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
@@ -39,24 +40,48 @@ def execute_non_query(query, params=()):
         cursor.execute(query, params)
 
         conn.commit()
-        conn.close()
     except sqlite3.Error as e:
-        logger.error(f"DB Error in execute_non_query: {e}")
-        raise
+        logger.error(f"Error executing non-query: {e}")
+        return
+    finally:
+        if conn:
+            conn.close()
 
 
 def execute_query(query, params=()):
-    """Executes SELECT queries and returns results."""
+    """Executes a read query against the database and returns all rows."""
+    conn = None
     try:
         conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
         cursor.execute(query, params)
-        result = cursor.fetchall()
-        conn.close()
-        return result
+        rows = cursor.fetchall()
+        return rows
     except sqlite3.Error as e:
-        logger.error(f"DB Error in execute_query: {e}")
-        raise
+        logger.error(f"Error executing query: {e}")
+        return []
+    finally:
+        if conn:
+            conn.close()
+
+
+def update_product_quantity(product_id, quantity_sold):
+    """Reduce product quantity in the database after a sale."""
+    conn = None
+    try:
+        conn = sqlite3.connect(config.DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute(
+            "UPDATE products SET quantity = quantity - ? WHERE product_id = ?",
+            (quantity_sold, product_id),
+        )
+        conn.commit()
+    except sqlite3.Error as e:
+        logger.error(f"Error updating product quantity: {e}")
+        return
+    finally:
+        if conn:
+            conn.close()
 
 
 def get_all_bills() -> list[dict[str, Any]]:
@@ -65,12 +90,20 @@ def get_all_bills() -> list[dict[str, Any]]:
     try:
         conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
-        cursor.execute("SELECT id, date, total_amount, items FROM bills")
+        cursor.execute(
+            "SELECT bill_id, timestamp, total_amount, bill_details FROM bills"
+        )
         rows = cursor.fetchall()
 
+feature/mypy-type-checking
         bills: list[dict[str, Any]] = []
         for row in rows:
             bill_id, date, total_amount, items_data = row
+
+        bills = []
+        for row in rows:
+            bill_id, timestamp, total_amount, items_data = row
+main
             try:
                 if isinstance(items_data, str):
                     items_data = json.loads(items_data)
@@ -80,14 +113,18 @@ def get_all_bills() -> list[dict[str, Any]]:
             bills.append(
                 {
                     "id": bill_id,
+feature/mypy-type-checking
                     "date": date,
+
+                    "date": timestamp,
+main
                     "total_amount": total_amount,
                     "items": items_data,
                 }
             )
         return bills
     except sqlite3.Error as e:
-        logger.error(f"DB Error while fetching all bills: {e}")
+        logger.error(f"Error fetching bills: {e}")
         return []
     finally:
         if conn:
