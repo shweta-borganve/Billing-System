@@ -1,6 +1,8 @@
 import sqlite3
 
 from src.auth.auth import login
+from src.billing.analytics import generate_sales_report
+from src.billing.billing import generate_bill, view_bill_history
 from src.database.database import initialize_database
 from src.products.product import (
     add_product,
@@ -9,8 +11,6 @@ from src.products.product import (
     update_product,
     view_products,
 )
-from src.billing.billing import generate_bill, view_bill_history
-from src.billing.analytics import generate_sales_report
 from src.services import config
 from src.services.logger_config import logger
 

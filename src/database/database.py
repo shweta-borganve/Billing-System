@@ -1,5 +1,5 @@
-import json
 import sqlite3
+
 from src.services import config
 from src.services.logger_config import logger
 
@@ -20,27 +20,32 @@ def initialize_database():
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS bills (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                date TEXT NOT NULL,
-                total_amount REAL NOT NULL,
-                items TEXT NOT NULL
-            )
-        """)
+
+        # 1. Create Products Table
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS products (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                product_id INTEGER UNIQUE,
+                product_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 price REAL NOT NULL,
                 quantity INTEGER NOT NULL
             )
         """)
+
+        # 2. Create Bills Table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS bills (
+                bill_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                bill_details TEXT NOT NULL,
+                total_amount REAL NOT NULL,
+                timestamp TEXT NOT NULL
+            )
+        """)
+
         conn.commit()
+        logger.info("Database and tables created successfully!")
     except sqlite3.Error as e:
         logger.error(f"Database initialization error: {e}")
-        # Handled gracefully so exceptions don't unhandled-crash tests expecting safe failure
+        raise
     finally:
         if conn:
             conn.close()
@@ -49,16 +54,21 @@ def initialize_database():
 def get_all_bills():
     """Retrieves all bill records from the database."""
     conn = None
-    rows = []
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT id, date, total_amount, items FROM bills")
+        cursor.execute(
+            "SELECT bill_id, timestamp, total_amount, bill_details FROM bills"
+        )
         rows = cursor.fetchall()
         return rows
     except sqlite3.Error as e:
         logger.error(f"Error fetching all bills: {e}")
-        raise
+        return []
     finally:
         if conn:
             conn.close()
+
+
+if __name__ == "__main__":
+    initialize_database()
