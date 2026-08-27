@@ -40,6 +40,18 @@ main
 Billing-System/
 │
 ├── src/
+feature/pre-commit-hooks
+feature/pre-commit-hooks
+│   ├── auth/          # Authentication, user roles, and security rules
+│   ├── billing/       # Billing calculations, analytics, and PDF exports
+│   ├── database/      # Database connections, models, and CRUD operations
+│   ├── products/      # Product inventory and catalog management
+│   └── services/      # Core application logic, configuration, and main entry point
+├── tests/             # Automated test suite and shared fixtures
+├── logs/              # Application execution logs
+├── requirements.txt   # Project dependencies
+└── pyproject.toml     # Pytest and tool configurations
+
 feature/pytest-config
 │   ├── auth/         # Authentication modules
 │   ├── billing/      # Billing logic, analytics, and PDF exports
@@ -52,6 +64,7 @@ feature/pytest-config
 ├── pyproject.toml    # Project metadata, linter, and pytest configurations
 ├── requirements.txt  # Project dependencies
 └── README.md 
+main
 ```
 
 │   ├── auth/            # Authentication modules
@@ -409,4 +422,4 @@ Through this project, I practiced:
 
 **Shweta Boraganve**
 
-GitHub: https://github.com/shweta-borganve 
+GitHub: https://github.com/shweta-borganve

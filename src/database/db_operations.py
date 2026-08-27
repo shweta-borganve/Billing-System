@@ -10,10 +10,39 @@ def update_product_quantity(product_id, quantity_sold):
     try:
         conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
+feature/pre-commit-hooks
+
+        # Create products table
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS products (
+                id INTEGER PRIMARY KEY,
+                name TEXT NOT NULL,
+                price REAL NOT NULL,
+                quantity INTEGER NOT NULL
+            )
+        """
+        )
+
+        # Create bills table
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS bills (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                date TEXT NOT NULL,
+                total_amount REAL NOT NULL,
+                items TEXT NOT NULL
+            )
+        """
+        )
+
+        cursor.execute(query, params)
+
         cursor.execute(
             "UPDATE products SET quantity = quantity - ? WHERE id = ?",
             (quantity_sold, product_id),
         )
+main
         conn.commit()
     except sqlite3.Error as e:  # pragma: no cover
         logger.error(f"Error updating product quantity: {e}")
