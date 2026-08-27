@@ -6,6 +6,7 @@ from config import DB_NAME
 from db_operations import update_product_quantity
 from file_handler import PRODUCTS_FILE, load_data
 from logger_config import logger
+
 from pdf_export import generate_pdf_receipt  # <-- Import PDF generator
 
 
