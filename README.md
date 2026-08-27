@@ -1,5 +1,10 @@
+feature/move-test-main
+feature/move-test-main
+# Python Billing System
+
 feature/pytest-config
 BILLING SYSTEM
+main
 
 A robust, modular Python-based billing management application designed with a clean architecture, role-based authentication, database persistence, and a comprehensive test suite.
 
@@ -40,7 +45,11 @@ main
 Billing-System/
 │
 ├── src/
+feature/move-test-main
+feature/move-test-main
+
 feature/pytest-config
+main
 │   ├── auth/         # Authentication modules
 │   ├── billing/      # Billing logic, analytics, and PDF exports
 │   ├── database/     # DB configuration and operations
@@ -49,7 +58,11 @@ feature/pytest-config
 ├── tests/            # Test suite (including test_main.py)
 ├── .env.example      # Environment variables template
 ├── .pre-commit-config.yaml # Pre-commit hooks configuration
+feature/move-test-main
+├── pyproject.toml    # Project metadata and tool configurations
+
 ├── pyproject.toml    # Project metadata, linter, and pytest configurations
+main
 ├── requirements.txt  # Project dependencies
 └── README.md 
 ```
