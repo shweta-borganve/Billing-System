@@ -1,14 +1,10 @@
-feature/pip-audit-scanning
-import runpy
-
 import json
-main
+import runpy
 import sqlite3
 from unittest.mock import patch
 
 import pytest
 
-feature/pip-audit-scanning
 from src.database import database, db_operations
 
 
@@ -157,7 +153,7 @@ def test_initialize_database_exception(monkeypatch):
     """Test exception handling during database initialization."""
     with patch("sqlite3.connect", side_effect=sqlite3.Error("Connection failed")):
         initialize_database()
-main
+
 
 
 def test_get_all_bills_exception():
@@ -167,7 +163,7 @@ def test_get_all_bills_exception():
         assert bills == []
 
 
-feature/pip-audit-scanning
+
 def test_db_operations_init_error(temp_db):
     with (
         patch("sqlite3.connect", side_effect=sqlite3.Error("DB Error")),
@@ -250,4 +246,3 @@ def test_update_product_quantity_exception(temp_db):
     """Test exception handling when updating product quantity fails."""
     with patch("sqlite3.connect", side_effect=sqlite3.Error("Update failed")):
         update_product_quantity(1, 5)
-main
