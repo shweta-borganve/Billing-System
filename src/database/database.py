@@ -44,5 +44,5 @@ def initialize_database():
         print(f"Error initializing database: {e}")
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     initialize_database()
