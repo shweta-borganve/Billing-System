@@ -15,8 +15,12 @@ def get_connection():
 
 
 def initialize_database():
+feature/bandit-security-scanning
+    """Creates the products and bills tables if they don't already exist."""
+
     """Initializes the required database tables."""
     conn = None
+main
     try:
         conn = get_connection()
         cursor = conn.cursor()
@@ -24,7 +28,11 @@ def initialize_database():
         # 1. Create Products Table
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS products (
+feature/bandit-security-scanning
+                product_id TEXT PRIMARY KEY,
+
                 product_id INTEGER PRIMARY KEY AUTOINCREMENT,
+main
                 name TEXT NOT NULL,
                 price REAL NOT NULL,
                 quantity INTEGER NOT NULL
@@ -40,6 +48,19 @@ def initialize_database():
                 timestamp TEXT NOT NULL
             )
         """)
+
+feature/bandit-security-scanning
+        # Save (commit) the changes and close the connection
+        conn.commit()
+        conn.close()
+        print("Database and tables created successfully!")
+    except sqlite3.Error as e:
+        logger.error(f"Database initialization error: {e}")
+        print(f"Error initializing database: {e}")
+        raise
+
+
+if __name__ == "__main__":  # pragma: no cover
 
         conn.commit()
         logger.info("Database and tables created successfully!")
@@ -71,4 +92,5 @@ def get_all_bills():
 
 
 if __name__ == "__main__":
+main
     initialize_database()

@@ -11,7 +11,29 @@ def execute_non_query(query, params=()):
     try:
         conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
+
+        # Create products table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS products ( 
+                id INTEGER PRIMARY KEY,
+                name TEXT NOT NULL,
+                price REAL NOT NULL,
+                quantity INTEGER NOT NULL
+            )
+        """)
+
+        # Create bills table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS bills (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                date TEXT NOT NULL,
+                total_amount REAL NOT NULL,
+                items TEXT NOT NULL
+            )
+        """)
+
         cursor.execute(query, params)
+
         conn.commit()
     except sqlite3.Error as e:
         logger.error(f"Error executing non-query: {e}")

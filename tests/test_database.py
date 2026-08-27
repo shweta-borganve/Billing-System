@@ -27,11 +27,16 @@ def test_database_connection_errors():
 
 def test_initialize_database_error():
     with (
+feature/bandit-security-scanning
+        patch("sqlite3.connect", side_effect=sqlite3.Error("Init Error")),
+        pytest.raises(sqlite3.Error, match="Init Error"),
+
         patch(
             "src.database.database.get_connection",
             side_effect=sqlite3.Error("Init failed"),
         ),
         pytest.raises(sqlite3.Error),
+main
     ):
         database.initialize_database()
 
