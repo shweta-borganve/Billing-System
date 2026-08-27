@@ -1,22 +1,43 @@
 feature/linting-pipelines
+feature/linting-pipelines
 # Billing System
 
 A robust Python-based billing management system featuring automated testing, database management, user authentication with role-based access, and automated code quality tools.
+
+feature/move-test-main
+feature/move-test-main
+# Python Billing System
+
+feature/pytest-config
+BILLING SYSTEM
+main
+
+A robust, modular Python-based billing management application designed with a clean architecture, role-based authentication, database persistence, and a comprehensive test suite.
+main
 
 ---
 
 ## Features
 
+feature/linting-pipelines
 - **Authentication & Roles**: Secure login with role-based permissions (`src/auth/`).
 - **Database Operations**: Clean relational schema handling and operations (`src/database/`).
 - **Automated Testing**: Comprehensive test coverage using `pytest` (`tests/`).
 - **Code Quality & Linting**: Automated formatting and linting pipelines via **Black**, **Isort**, and **Ruff**.
 - **CI/CD**: GitHub Actions workflow to validate code quality and run tests automatically on every push.
 
+- **User Authentication:** Secure role-based login and session handling.
+- **Product & Inventory Management:** Add, update, track, and manage items seamlessly.
+- **Billing & Analytics:** Compute totals, handle taxes, and generate structured reports.
+- **Database Operations:** Persistent data storage using SQLite / database utilities.
+- **Automated Testing:** Standardized test suite organized under the `tests/` directory using `pytest`.
+main
+
 ---
 
 ## Project Structure
 
+feature/linting-pipelines
 ```text
 Billing-System/
 ├── .github/workflows/    # CI/CD pipelines
@@ -27,6 +48,8 @@ Billing-System/
 └── README.md
 ```
 
+
+main
 # Billing System 🛒
 
 A Python-based billing and inventory management system featuring SQLite database integration, structured modular architecture, robust unit testing, and strict code quality enforcement.
@@ -44,11 +67,34 @@ A Python-based billing and inventory management system featuring SQLite database
 ---
 
 ## 📂 Project Structure
+main
 
 ```text
 Billing-System/
 │
 ├── src/
+feature/move-test-main
+feature/move-test-main
+
+feature/pytest-config
+main
+│   ├── auth/         # Authentication modules
+│   ├── billing/      # Billing logic, analytics, and PDF exports
+│   ├── database/     # DB configuration and operations
+│   ├── products/     # Product inventory management
+│   └── services/     # Core services, config, logging, and main application
+├── tests/            # Test suite (including test_main.py)
+├── .env.example      # Environment variables template
+├── .pre-commit-config.yaml # Pre-commit hooks configuration
+feature/move-test-main
+├── pyproject.toml    # Project metadata and tool configurations
+
+├── pyproject.toml    # Project metadata, linter, and pytest configurations
+main
+├── requirements.txt  # Project dependencies
+└── README.md 
+```
+
 │   ├── auth/            # Authentication modules
 │   ├── billing/         # Billing logic, analytics, and PDF export
 │   ├── database/        # Database initialization and operations (CRUD)
