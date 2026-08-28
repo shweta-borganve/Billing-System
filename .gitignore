@@ -13,4 +13,10 @@ venv/
 .vscode/ 
 
 .env 
+feature/auth-and-roles
+venv/ 
+
+.coverage
+
 venv/ .coverage
+ main
