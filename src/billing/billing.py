@@ -135,16 +135,14 @@ def generate_bill(items=None):
         cursor = conn.cursor()
 
         # Ensure bills table exists
-        cursor.execute(
-            """
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS bills (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 date TEXT NOT NULL,
                 total_amount REAL NOT NULL,
                 items TEXT NOT NULL
             )
-        """
-        )
+        """)
 
         # Insert bill record
         cursor.execute(

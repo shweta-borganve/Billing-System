@@ -13,16 +13,14 @@ def temp_db(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "DB_NAME", str(db_file))
     conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
-    cursor.execute(
-        """
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS products (
             product_id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             price REAL NOT NULL,
             quantity INTEGER NOT NULL
         )
-    """
-    )
+    """)
     conn.commit()
     conn.close()
     return db_file
