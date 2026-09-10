@@ -13,7 +13,7 @@ def generate_sales_report():
         cursor = conn.cursor()
 
         # Fetch total amounts and items from the SQLite bills table
-        cursor.execute("SELECT total_amount, items FROM bills")
+        cursor.execute("SELECT total_amount, bill_details FROM bills")
         rows = cursor.fetchall()
         conn.close()
 

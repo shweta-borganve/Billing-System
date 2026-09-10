@@ -4,8 +4,8 @@ from datetime import datetime, timezone
 
 from config import DB_NAME
 from db_operations import update_product_quantity
-from file_handler import PRODUCTS_FILE, load_data
 from logger_config import logger
+
 from pdf_export import generate_pdf_receipt  # <-- Import PDF generator
 
 
@@ -19,7 +19,21 @@ def check_low_stock_in_list(products, threshold=5):
 
 
 def generate_bill():
-    products = load_data(PRODUCTS_FILE)
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute("SELECT product_id, name, price, quantity FROM products")
+        rows = cursor.fetchall()
+        conn.close()
+
+        products = []
+        for r in rows:
+            products.append(
+                {"product_id": r[0], "name": r[1], "price": r[2], "quantity": r[3]}
+            )
+    except Exception as e:
+        logger.error(f"Error loading products for billing: {e}")
+        products = []
 
     if not products:
         print("No products available.")

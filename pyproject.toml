@@ -23,3 +23,9 @@ addopts = "--cov=src --cov-report=term-missing"
 filterwarnings = [
     "ignore::ResourceWarning",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+]
