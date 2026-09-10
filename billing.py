@@ -31,7 +31,7 @@ def generate_bill():
             products.append(
                 {"product_id": r[0], "name": r[1], "price": r[2], "quantity": r[3]}
             )
-    except Exception as e:
+    except sqlite3.Error as e:
         logger.error(f"Error loading products for billing: {e}")
         products = []
 
