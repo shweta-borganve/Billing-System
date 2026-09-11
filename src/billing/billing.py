@@ -4,7 +4,6 @@ from datetime import datetime, timezone
 
 from src.billing.pdf_export import generate_pdf_receipt
 from src.services import config
-from src.services.file_handler import PRODUCTS_FILE, load_data
 from src.services.logger_config import logger
 
 
@@ -62,12 +61,65 @@ def check_low_stock_in_list(products, threshold=5):
 def generate_bill(items=None):
     """Generates a bill, saves it to the database, and updates product stock."""
     if items is None:
-        products = load_data(PRODUCTS_FILE)
+        try:
+            conn = sqlite3.connect(config.DB_NAME)
+            cursor = conn.cursor()
+            cursor.execute("SELECT product_id, name, price, quantity FROM products")
+            rows = cursor.fetchall()
+            conn.close()
+
+            products = []
+            for r in rows:
+                products.append(
+                    {"product_id": r[0], "name": r[1], "price": r[2], "quantity": r[3]}
+                )
+        except sqlite3.Error as e:
+            logger.error(f"Error loading products for billing: {e}")
+            products = []
+
         if not products:
             print("No products available.")
             logger.warning("Bill generation attempted with no products.")
             return None
+
+        # Interactive loop to add items to bill if items are not passed directly
         items = []
+        total = 0
+        while True:
+            try:
+                product_id = int(input("Enter Product ID (0 to finish): "))
+                if product_id == 0:
+                    break
+
+                quantity = int(input("Enter quantity: "))
+                found = False
+                for product in products:
+                    if int(product["product_id"]) == product_id:
+                        found = True
+                        if quantity <= 0:
+                            print("Quantity must be greater than 0.")
+                            break
+                        if quantity > product["quantity"]:
+                            print("Insufficient stock.")
+                            break
+
+                        amount = product["price"] * quantity
+                        items.append(
+                            {
+                                "product_id": product["product_id"],
+                                "name": product["name"],
+                                "price": product["price"],
+                                "quantity": quantity,
+                                "amount": amount,
+                            }
+                        )
+                        total += amount
+                        print(f"Added {product['name']} to bill.")
+                        break
+                if not found:
+                    print("Product not found.")
+            except ValueError:
+                print("Invalid input.")
 
     if not items:
         print("No items provided for the bill.")
@@ -94,7 +146,7 @@ def generate_bill(items=None):
 
         # Insert bill record
         cursor.execute(
-            "INSERT INTO bills (date, total_amount, items) VALUES (?, ?, ?)",
+            "INSERT INTO bills (timestamp, total_amount, bill_details) VALUES (?, ?, ?)",
             (current_date, total_amount, items_json),
         )
 
@@ -107,8 +159,8 @@ def generate_bill(items=None):
             qty_sold = item.get("quantity", 1)
             if product_id is not None:
                 cursor.execute(
-                    "UPDATE products SET quantity = quantity - ? WHERE id = ? OR product_id = ?",
-                    (qty_sold, product_id, product_id),
+                    "UPDATE products SET quantity = quantity - ? WHERE product_id = ?",
+                    (qty_sold, product_id),
                 )
 
         conn.commit()
@@ -137,7 +189,9 @@ def view_bills():
     try:
         conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
-        cursor.execute("SELECT id, date, total_amount, items FROM bills")
+        cursor.execute(
+            "SELECT bill_id, timestamp, total_amount, bill_details FROM bills"
+        )
         bills = cursor.fetchall()
         conn.close()
 
@@ -146,6 +200,7 @@ def view_bills():
             return []
 
         formatted_bills = []
+        print("\n===== Bill History =====")
         for bill in bills:
             try:
                 items_parsed = json.loads(bill[3]) if bill[3] else []
@@ -159,6 +214,16 @@ def view_bills():
                 "items": items_parsed,
             }
             formatted_bills.append(bill_data)
+
+            print(f"Bill ID: {bill[0]} | Date: {bill[1]} | Total: ₹{bill[2]}")
+            print("Items:")
+            for item in items_parsed:
+                name = item.get("name", "Product")
+                qty = item.get("quantity", 1)
+                amt = item.get("amount", item.get("price", 0))
+                print(f"  - {name} (Qty: {qty}) - ₹{amt}")
+            print("-" * 35)
+
         return formatted_bills
 
     except sqlite3.Error as e:
@@ -178,7 +243,8 @@ def search_bill_by_id(bill_id):
         conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT id, date, total_amount, items FROM bills WHERE id = ?", (bill_id,)
+            "SELECT bill_id, timestamp, total_amount, bill_details FROM bills WHERE bill_id = ?",
+            (bill_id,),
         )
         bill = cursor.fetchone()
         conn.close()
@@ -211,7 +277,7 @@ def delete_bill(bill_id):
     try:
         conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
-        cursor.execute("DELETE FROM bills WHERE id = ?", (bill_id,))
+        cursor.execute("DELETE FROM bills WHERE bill_id = ?", (bill_id,))
         conn.commit()
         deleted_rows = cursor.rowcount
         conn.close()

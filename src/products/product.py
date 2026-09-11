@@ -33,7 +33,9 @@ def add_product():
         cursor = conn.cursor()
 
         # Check if product ID already exists
-        cursor.execute("SELECT id FROM products WHERE id = ?", (product_id,))
+        cursor.execute(
+            "SELECT product_id FROM products WHERE product_id = ?", (product_id,)
+        )
         if cursor.fetchone():
             print("Product ID already exists.")
             logger.warning(f"Duplicate product ID: {product_id}")
@@ -42,7 +44,7 @@ def add_product():
 
         # Insert new product into SQLite
         cursor.execute(
-            "INSERT INTO products (id, name, price, quantity) VALUES (?, ?, ?, ?)",
+            "INSERT INTO products (product_id, name, price, quantity) VALUES (?, ?, ?, ?)",
             (product_id, name, price, quantity),
         )
         conn.commit()
@@ -65,7 +67,7 @@ def view_products():
     try:
         conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
-        cursor.execute("SELECT id, name, price, quantity FROM products")
+        cursor.execute("SELECT product_id, name, price, quantity FROM products")
         rows = cursor.fetchall()
         conn.close()
 
@@ -100,12 +102,12 @@ def search_product():
         try:
             product_id = int(raw_input_val)
             cursor.execute(
-                "SELECT id, name, price, quantity FROM products WHERE id = ?",
+                "SELECT product_id, name, price, quantity FROM products WHERE product_id = ?",
                 (product_id,),
             )
         except ValueError:
             cursor.execute(
-                "SELECT id, name, price, quantity FROM products WHERE name LIKE ?",
+                "SELECT product_id, name, price, quantity FROM products WHERE name LIKE ?",
                 (f"%{raw_input_val}%",),
             )
 
@@ -137,7 +139,9 @@ def update_product():
 
         conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
-        cursor.execute("SELECT id FROM products WHERE id = ?", (product_id,))
+        cursor.execute(
+            "SELECT product_id FROM products WHERE product_id = ?", (product_id,)
+        )
         if not cursor.fetchone():
             print("Product not found.")
             conn.close()
@@ -165,7 +169,7 @@ def update_product():
             return
 
         cursor.execute(
-            "UPDATE products SET name = ?, price = ?, quantity = ? WHERE id = ?",
+            "UPDATE products SET name = ?, price = ?, quantity = ? WHERE product_id = ?",
             (name, price, quantity, product_id),
         )
         conn.commit()
@@ -187,13 +191,15 @@ def delete_product():
 
         conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
-        cursor.execute("SELECT id FROM products WHERE id = ?", (product_id,))
+        cursor.execute(
+            "SELECT product_id FROM products WHERE product_id = ?", (product_id,)
+        )
         if not cursor.fetchone():
             print("Product not found.")
             conn.close()
             return
 
-        cursor.execute("DELETE FROM products WHERE id = ?", (product_id,))
+        cursor.execute("DELETE FROM products WHERE product_id = ?", (product_id,))
         conn.commit()
         conn.close()
 

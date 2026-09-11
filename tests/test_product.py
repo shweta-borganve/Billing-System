@@ -15,7 +15,7 @@ def temp_db(tmp_path, monkeypatch):
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS products (
-            id INTEGER PRIMARY KEY,
+            product_id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             price REAL NOT NULL,
             quantity INTEGER NOT NULL
@@ -53,7 +53,7 @@ def test_add_product_negative_quantity(temp_db):
 def test_add_product_duplicate_id(temp_db):
     conn = sqlite3.connect(temp_db)
     conn.execute(
-        "INSERT INTO products (id, name, price, quantity) VALUES (1, 'Milk', 30.0, 5)"
+        "INSERT INTO products (product_id, name, price, quantity) VALUES (1, 'Milk', 30.0, 5)"
     )
     conn.commit()
     conn.close()
@@ -88,7 +88,7 @@ def test_view_products_empty(temp_db):
 def test_view_products_with_data(temp_db):
     conn = sqlite3.connect(temp_db)
     conn.execute(
-        "INSERT INTO products (id, name, price, quantity) VALUES (1, 'Milk', 30.0, 5)"
+        "INSERT INTO products (product_id, name, price, quantity) VALUES (1, 'Milk', 30.0, 5)"
     )
     conn.commit()
     conn.close()
@@ -108,7 +108,7 @@ def test_view_products_db_error(temp_db):
 def test_update_product_success(temp_db):
     conn = sqlite3.connect(temp_db)
     conn.execute(
-        "INSERT INTO products (id, name, price, quantity) VALUES (1, 'Bread', 20.0, 10)"
+        "INSERT INTO products (product_id, name, price, quantity) VALUES (1, 'Bread', 20.0, 10)"
     )
     conn.commit()
     conn.close()
@@ -132,7 +132,7 @@ def test_update_product_not_found(temp_db):
 def test_update_product_empty_name(temp_db):
     conn = sqlite3.connect(temp_db)
     conn.execute(
-        "INSERT INTO products (id, name, price, quantity) VALUES (1, 'Bread', 20.0, 10)"
+        "INSERT INTO products (product_id, name, price, quantity) VALUES (1, 'Bread', 20.0, 10)"
     )
     conn.commit()
     conn.close()
@@ -145,7 +145,7 @@ def test_update_product_empty_name(temp_db):
 def test_update_product_invalid_price(temp_db):
     conn = sqlite3.connect(temp_db)
     conn.execute(
-        "INSERT INTO products (id, name, price, quantity) VALUES (1, 'Bread', 20.0, 10)"
+        "INSERT INTO products (product_id, name, price, quantity) VALUES (1, 'Bread', 20.0, 10)"
     )
     conn.commit()
     conn.close()
@@ -158,7 +158,7 @@ def test_update_product_invalid_price(temp_db):
 def test_update_product_invalid_quantity(temp_db):
     conn = sqlite3.connect(temp_db)
     conn.execute(
-        "INSERT INTO products (id, name, price, quantity) VALUES (1, 'Bread', 20.0, 10)"
+        "INSERT INTO products (product_id, name, price, quantity) VALUES (1, 'Bread', 20.0, 10)"
     )
     conn.commit()
     conn.close()
@@ -171,7 +171,7 @@ def test_update_product_invalid_quantity(temp_db):
 def test_update_product_value_error(temp_db):
     conn = sqlite3.connect(temp_db)
     conn.execute(
-        "INSERT INTO products (id, name, price, quantity) VALUES (1, 'Bread', 20.0, 10)"
+        "INSERT INTO products (product_id, name, price, quantity) VALUES (1, 'Bread', 20.0, 10)"
     )
     conn.commit()
     conn.close()
@@ -209,7 +209,7 @@ def test_update_product_execute_db_error(temp_db):
 def test_delete_product_success(temp_db):
     conn = sqlite3.connect(temp_db)
     conn.execute(
-        "INSERT INTO products (id, name, price, quantity) VALUES (1, 'Butter', 50.0, 2)"
+        "INSERT INTO products (product_id, name, price, quantity) VALUES (1, 'Butter', 50.0, 2)"
     )
     conn.commit()
     conn.close()
@@ -256,7 +256,7 @@ def test_delete_product_execute_db_error(temp_db):
 def test_search_product_success_name(temp_db):
     conn = sqlite3.connect(temp_db)
     conn.execute(
-        "INSERT INTO products (id, name, price, quantity) VALUES (1, 'Apple Juice', 40.0, 10)"
+        "INSERT INTO products (product_id, name, price, quantity) VALUES (1, 'Apple Juice', 40.0, 10)"
     )
     conn.commit()
     conn.close()
@@ -269,7 +269,7 @@ def test_search_product_success_name(temp_db):
 def test_search_product_success_id(temp_db):
     conn = sqlite3.connect(temp_db)
     conn.execute(
-        "INSERT INTO products (id, name, price, quantity) VALUES (1, 'Apple Juice', 40.0, 10)"
+        "INSERT INTO products (product_id, name, price, quantity) VALUES (1, 'Apple Juice', 40.0, 10)"
     )
     conn.commit()
     conn.close()

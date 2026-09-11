@@ -50,7 +50,7 @@ def main():
         print("7. View Bill History")
         print("8. Generate Sales Report")
         print("9. Check Low Stock")
-        print("0. Exit")
+        print("10. Exit")
 
         choice = input("Enter your choice: ").strip()
 
@@ -72,7 +72,7 @@ def main():
             generate_sales_report()
         elif choice == "9":
             check_and_display_low_stock()
-        elif choice == "0":
+        elif choice == "10":
             print("Exiting application. Goodbye!")
             break
         else:

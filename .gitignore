@@ -4,13 +4,24 @@ __pycache__/
 
 # Log files
 logs/*.log
+*.log
 
 # Virtual environment
 venv/
 .venv/
 
 # VS Code
-.vscode/ 
+.vscode/
 
-.env 
-venv/ .coverage
+# Environment variables
+.env
+
+# Database files
+*.db
+
+# Coverage files
+.coverage
+htmlcov/
+
+# Generated PDF receipts
+bill_*.pdf
