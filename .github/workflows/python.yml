@@ -44,9 +44,8 @@ jobs:
       - name: Run unit tests with coverage
         run: |
           echo "=== Running unit tests with coverage ==="
-          PYTHONPATH=. coverage run -m pytest
           mkdir -p coverage-output
-          coverage xml -o coverage-output/coverage.xml
+          PYTHONPATH=. pytest --cov=src --cov-report=xml:coverage-output/coverage.xml
 
       - name: Run coverage gate
         uses: shweta-borganve/coverage-gate@v1
