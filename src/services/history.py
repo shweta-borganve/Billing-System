@@ -1,5 +1,6 @@
 import json
 import sqlite3
+
 from src.services import config
 from src.services.logger_config import logger
 
@@ -30,7 +31,9 @@ def view_bill_history():
                     "items": items,
                 }
                 formatted_bills.append(bill_data)
-                print(f"Bill ID: {bill[0]} | Date: {bill[1]} | Total: {bill[2]} | Items: {items}")
+                print(
+                    f"Bill ID: {bill[0]} | Date: {bill[1]} | Total: {bill[2]} | Items: {items}"
+                )
             return formatted_bills
 
     except sqlite3.Error as e:

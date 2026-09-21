@@ -19,7 +19,9 @@ def calculate_total(items):
 def add_item_to_cart(cart, product, quantity=1):
     """Adds a product to the current billing cart or updates quantity if it exists."""
     for item in cart:
-        if item.get("id") == product.get("id") or item.get("product_id") == product.get("product_id"):
+        if item.get("id") == product.get("id") or item.get("product_id") == product.get(
+            "product_id"
+        ):
             item["quantity"] += quantity
             return cart
 
@@ -36,7 +38,11 @@ def add_item_to_cart(cart, product, quantity=1):
 
 def remove_item_from_cart(cart, product_id):
     """Removes an item from the billing cart by product ID."""
-    return [item for item in cart if item.get("id") != product_id and item.get("product_id") != product_id]
+    return [
+        item
+        for item in cart
+        if item.get("id") != product_id and item.get("product_id") != product_id
+    ]
 
 
 def clear_cart():
@@ -108,12 +114,14 @@ def generate_bill(items=None):
         conn.commit()
         conn.close()
         print(f"Bill generated successfully! Total Amount: {total_amount}")
-        
+
         # Try generating PDF receipt if possible
         try:
             pdf_filename = f"bill_{bill_id}.pdf"
-            generate_pdf_receipt(pdf_filename, bill_id, current_date, items, total_amount)
-        except Exception as e:
+            generate_pdf_receipt(
+                pdf_filename, bill_id, current_date, items, total_amount
+            )
+        except Exception as e:  # noqa: BLE001
             logger.error(f"Error generating PDF receipt: {e}")
 
         return total_amount

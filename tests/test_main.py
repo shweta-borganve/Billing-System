@@ -1,7 +1,8 @@
-import pytest
-from unittest.mock import patch
 import sqlite3
-from src.services.main import main, check_and_display_low_stock
+
+import pytest
+
+from src.services.main import check_and_display_low_stock, main
 
 
 @pytest.fixture
@@ -52,15 +53,18 @@ def test_main_menu_all_options(mock_main_dependencies, monkeypatch, capsys):
 
 def test_check_and_display_low_stock(monkeypatch, capsys):
     """Test low stock warning display function."""
+
     class MockCursor:
         def execute(self, query):
             pass
+
         def fetchall(self):
             return [("Item A", 2), ("Item B", 1)]
 
     class MockConn:
         def cursor(self):
             return MockCursor()
+
         def close(self):
             pass
 
@@ -74,6 +78,7 @@ def test_check_and_display_low_stock(monkeypatch, capsys):
 
 def test_check_and_display_low_stock_exception(monkeypatch):
     """Test low stock exception handling."""
+
     def mock_connect(*args, **kwargs):
         raise sqlite3.Error("DB error")
 
