@@ -5,25 +5,70 @@ from src.services.logger_config import logger
 
 
 def get_connection():
-    """Returns a database connection."""
-    return sqlite3.connect(config.DB_NAME)
+    """Creates and returns a SQLite database connection."""
+    try:
+        conn = sqlite3.connect(config.DB_NAME)
+        return conn
+    except sqlite3.Error as e:
+        logger.error(f"Database connection error: {e}")
+        raise
 
 
 def initialize_database():
-    """Initializes the database tables."""
+    """Initializes the required database tables."""
+    conn = None
     try:
         conn = get_connection()
         cursor = conn.cursor()
+
+        # 1. Create Products Table
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS products (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                product_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 price REAL NOT NULL,
                 quantity INTEGER NOT NULL
             )
         """)
+
+        # 2. Create Bills Table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS bills (
+                bill_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                bill_details TEXT NOT NULL,
+                total_amount REAL NOT NULL,
+                timestamp TEXT NOT NULL
+            )
+        """)
+
         conn.commit()
-        conn.close()
+        logger.info("Database and tables created successfully!")
     except sqlite3.Error as e:
         logger.error(f"Database initialization error: {e}")
-        print(f"Error initializing database: {e}")
+        raise
+    finally:
+        if conn:
+            conn.close()
+
+
+def get_all_bills():
+    """Retrieves all bill records from the database."""
+    conn = None
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT bill_id, timestamp, total_amount, bill_details FROM bills"
+        )
+        rows = cursor.fetchall()
+        return rows
+    except sqlite3.Error as e:
+        logger.error(f"Error fetching all bills: {e}")
+        return []
+    finally:
+        if conn:
+            conn.close()
+
+
+if __name__ == "__main__":
+    initialize_database()

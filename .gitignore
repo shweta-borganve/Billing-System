@@ -1,16 +1,50 @@
 # Python cache
-__pycache__/
+
+**pycache**/
 *.pyc
+*.pyo
+
+# Test coverage
+
+.coverage
+htmlcov/
+.pytest_cache/
 
 # Log files
+
 logs/*.log
+*.log
 
 # Virtual environment
+
 venv/
 .venv/
 
 # VS Code
-.vscode/ 
 
-.env 
-venv/ 
+.vscode/
+
+# Environment variables
+
+.env
+.env.*
+
+# Local SQLite database
+
+billing.db
+*.db
+
+# Generated PDF receipts
+
+bill_*.pdf
+
+# Build / packaging files
+
+build/
+dist/
+*.egg-info/
+
+# OS-generated files
+
+.DS_Store
+Thumbs.db

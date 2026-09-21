@@ -11,34 +11,32 @@ def view_bill_history():
         with sqlite3.connect(config.DB_NAME) as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT id, date, total_amount, items FROM bills")
-            rows = cursor.fetchall()
+            bills = cursor.fetchall()
 
-        if not rows:
-            print("No bill history available.")
-            logger.warning("No bill history available to display.")
-            return
+            if not bills:
+                print("No bill history found.")
+                return []
 
-        print("\n===== BILL HISTORY =====")
-        for row in rows:
-            bill_id, date, total_amount, items_data = row
-            try:
-                if isinstance(items_data, str):
-                    items_data = json.loads(items_data)
-            except json.JSONDecodeError:
-                items_data = []
+            formatted_bills = []
+            for bill in bills:
+                try:
+                    items = json.loads(bill[3])
+                except (json.JSONDecodeError, TypeError):
+                    items = bill[3]
 
-            print(f"\nBill ID: {bill_id} | Date: {date}")
-            print("-" * 35)
-            for item in items_data:
-                name = item.get("name", "Unknown")
-                qty = item.get("quantity", 0)
-                amount = item.get("amount", 0)
-                print(f"  - {name} x {qty} = ₹{amount:.2f}")
-            print(f"Total Amount: ₹{total_amount:.2f}")
-            print("-" * 35)
-
-        logger.info("Bill history viewed successfully.")
+                bill_data = {
+                    "id": bill[0],
+                    "date": bill[1],
+                    "total_amount": bill[2],
+                    "items": items,
+                }
+                formatted_bills.append(bill_data)
+                print(
+                    f"Bill ID: {bill[0]} | Date: {bill[1]} | Total: {bill[2]} | Items: {items}"
+                )
+            return formatted_bills
 
     except sqlite3.Error as e:
-        print(f"Database error: {e}")
-        logger.error(f"Error viewing bill history: {e}")
+        logger.error(f"Database error while fetching bill history: {e}")
+        print(f"Error loading bill history: {e}")
+        return []
