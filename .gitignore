@@ -17,5 +17,14 @@ feature/pre-commit-hooks
 venv/
 
 .env 
+feature/auth-and-roles
+venv/ 
+
+.coverage
+
 venv/ .coverage
+feature/pre-commit-hooks
 main
+
+ main
+ main
