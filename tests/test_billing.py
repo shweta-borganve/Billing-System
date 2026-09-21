@@ -166,3 +166,9 @@ def test_search_and_delete_bill_exception_paths(temp_db):
     ):
         assert billing.search_bill_by_id(1) is None
         assert billing.delete_bill(1) is False
+
+
+def test_view_bills_when_no_bills_exist(temp_db):
+    bills = billing.view_bills()
+
+    assert bills == []
