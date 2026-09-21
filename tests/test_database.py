@@ -1,3 +1,4 @@
+import runpy
 import sqlite3
 from unittest.mock import patch
 
@@ -90,3 +91,23 @@ def test_database_get_all_bills_exception_handling():
         mock_cursor = mock_conn.cursor.return_value
         mock_cursor.execute.side_effect = sqlite3.Error("Execution error")
         assert database.get_all_bills() == []
+
+
+def test_database_main_block(tmp_path):
+    db_file = tmp_path / "main_test.db"
+
+    with patch.object(config, "DB_NAME", str(db_file)):
+        runpy.run_path("src/database/database.py", run_name="__main__")
+
+    conn = sqlite3.connect(db_file)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='products'"
+    )
+    assert cursor.fetchone() is not None
+
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='bills'")
+    assert cursor.fetchone() is not None
+
+    conn.close()
