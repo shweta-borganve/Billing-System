@@ -13,6 +13,7 @@ venv/
 # VS Code
 .vscode/
 
+feature/pdf-receipt-generation
 # Environment variables
 .env
 
@@ -25,3 +26,13 @@ htmlcov/
 
 # Generated PDF receipts
 bill_*.pdf
+
+.env 
+feature/auth-and-roles
+venv/ 
+
+.coverage
+
+venv/ .coverage
+ main
+main
