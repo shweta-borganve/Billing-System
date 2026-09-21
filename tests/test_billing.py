@@ -16,8 +16,7 @@ def temp_db(tmp_path):
 
     conn = sqlite3.connect(config.DB_NAME)
     cursor = conn.cursor()
-    cursor.execute(
-        """
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS products (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             product_id INTEGER,
@@ -25,18 +24,15 @@ def temp_db(tmp_path):
             price REAL NOT NULL,
             quantity INTEGER NOT NULL
         )
-    """
-    )
-    cursor.execute(
-        """
+    """)
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS bills (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             date TEXT NOT NULL,
             total_amount REAL NOT NULL,
             items TEXT NOT NULL
         )
-    """
-    )
+    """)
     conn.commit()
     conn.close()
 
