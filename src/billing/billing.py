@@ -63,10 +63,12 @@ def generate_bill(items=None):
     """Generates a bill, saves it to the database, and updates product stock."""
     if items is None:
         products = load_data(PRODUCTS_FILE)
+
         if not products:
             print("No products available.")
             logger.warning("Bill generation attempted with no products.")
             return None
+
         items = []
 
     if not items:
@@ -90,7 +92,7 @@ def generate_bill(items=None):
                 total_amount REAL NOT NULL,
                 items TEXT NOT NULL
             )
-        """)
+            """)
 
         # Insert bill record
         cursor.execute(
@@ -105,21 +107,27 @@ def generate_bill(items=None):
         for item in items:
             product_id = item.get("id", item.get("product_id"))
             qty_sold = item.get("quantity", 1)
+
             if product_id is not None:
                 cursor.execute(
-                    "UPDATE products SET quantity = quantity - ? WHERE id = ? OR product_id = ?",
-                    (qty_sold, product_id, product_id),
+                    "UPDATE products SET quantity = quantity - ? WHERE id = ?",
+                    (qty_sold, product_id),
                 )
 
         conn.commit()
         conn.close()
+
         print(f"Bill generated successfully! Total Amount: {total_amount}")
 
         # Try generating PDF receipt if possible
         try:
             pdf_filename = f"bill_{bill_id}.pdf"
             generate_pdf_receipt(
-                pdf_filename, bill_id, current_date, items, total_amount
+                pdf_filename,
+                bill_id,
+                current_date,
+                items,
+                total_amount,
             )
         except Exception as e:  # noqa: BLE001
             logger.error(f"Error generating PDF receipt: {e}")
@@ -146,6 +154,7 @@ def view_bills():
             return []
 
         formatted_bills = []
+
         for bill in bills:
             try:
                 items_parsed = json.loads(bill[3]) if bill[3] else []
@@ -158,7 +167,9 @@ def view_bills():
                 "total_amount": bill[2],
                 "items": items_parsed,
             }
+
             formatted_bills.append(bill_data)
+
         return formatted_bills
 
     except sqlite3.Error as e:
@@ -177,9 +188,12 @@ def search_bill_by_id(bill_id):
     try:
         conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
+
         cursor.execute(
-            "SELECT id, date, total_amount, items FROM bills WHERE id = ?", (bill_id,)
+            "SELECT id, date, total_amount, items FROM bills WHERE id = ?",
+            (bill_id,),
         )
+
         bill = cursor.fetchone()
         conn.close()
 
@@ -198,6 +212,7 @@ def search_bill_by_id(bill_id):
             "total_amount": bill[2],
             "items": items_parsed,
         }
+
         return bill_data
 
     except sqlite3.Error as e:
@@ -211,14 +226,21 @@ def delete_bill(bill_id):
     try:
         conn = sqlite3.connect(config.DB_NAME)
         cursor = conn.cursor()
-        cursor.execute("DELETE FROM bills WHERE id = ?", (bill_id,))
+
+        cursor.execute(
+            "DELETE FROM bills WHERE id = ?",
+            (bill_id,),
+        )
+
         conn.commit()
+
         deleted_rows = cursor.rowcount
         conn.close()
 
         if deleted_rows > 0:
             print(f"Bill {bill_id} deleted successfully.")
             return True
+
         else:
             print(f"Bill {bill_id} not found for deletion.")
             return False
