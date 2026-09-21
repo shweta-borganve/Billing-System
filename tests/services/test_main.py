@@ -129,7 +129,7 @@ def test_create_bill_success(monkeypatch, capsys):
 
 def test_create_bill_no_products(monkeypatch):
     """Test bill creation when no products are available."""
-    monkeypatch.setattr("src.services.main.view_products", lambda: [])
+    monkeypatch.setattr("src.services.main.view_products", list)
 
     from src.services.main import create_bill
 

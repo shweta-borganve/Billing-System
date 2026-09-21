@@ -3,7 +3,6 @@ import sqlite3
 from src.auth.auth import login
 from src.billing.analytics import generate_sales_report
 from src.billing.billing import add_item_to_cart, generate_bill
-from src.services.history import view_bill_history
 from src.database.database import initialize_database
 from src.products.product import (
     add_product,
@@ -13,6 +12,7 @@ from src.products.product import (
     view_products,
 )
 from src.services import config
+from src.services.history import view_bill_history
 from src.services.logger_config import logger
 
 
