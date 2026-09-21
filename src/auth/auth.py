@@ -2,8 +2,8 @@ from src.services.logger_config import logger
 
 # Define users with roles
 USERS = {
-    "admin": {"password": "1234", "role": "admin"},
-    "staff": {"password": "abcd", "role": "staff"},
+    "admin": {"password": "1234", "role": "admin"},  # nosec B105
+    "staff": {"password": "abcd", "role": "staff"},  # nosec B105
 }
 
 
