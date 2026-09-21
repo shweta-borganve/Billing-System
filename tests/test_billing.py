@@ -16,7 +16,8 @@ def temp_db(tmp_path):
 
     conn = sqlite3.connect(config.DB_NAME)
     cursor = conn.cursor()
-    cursor.execute("""
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS products (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             product_id INTEGER,
@@ -24,15 +25,18 @@ def temp_db(tmp_path):
             price REAL NOT NULL,
             quantity INTEGER NOT NULL
         )
-    """)
-    cursor.execute("""
+    """
+    )
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS bills (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             date TEXT NOT NULL,
             total_amount REAL NOT NULL,
             items TEXT NOT NULL
         )
-    """)
+    """
+    )
     conn.commit()
     conn.close()
 
@@ -166,3 +170,9 @@ def test_search_and_delete_bill_exception_paths(temp_db):
     ):
         assert billing.search_bill_by_id(1) is None
         assert billing.delete_bill(1) is False
+
+
+def test_view_bills_when_no_bills_exist(temp_db):
+    bills = billing.view_bills()
+
+    assert bills == []
