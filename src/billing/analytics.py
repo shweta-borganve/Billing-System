@@ -32,11 +32,18 @@ def generate_sales_report():
                 if isinstance(items_data, str):
                     items_data = json.loads(items_data)
 
+                if not isinstance(items_data, list):
+                    continue
+
                 for item in items_data:
+                    if not isinstance(item, dict):
+                        continue
+
                     name = item.get("name", "Unknown")
                     qty = item.get("quantity", 0)
                     item_sales_count[name] += qty
-            except json.JSONDecodeError:
+
+            except (json.JSONDecodeError, TypeError):
                 continue
 
         print("\n" + "=" * 45)

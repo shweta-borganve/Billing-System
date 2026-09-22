@@ -75,3 +75,37 @@ def test_generate_sales_report_sqlite_error(temp_db):
     """Test database error handling during sales report generation."""
     with patch("sqlite3.connect", side_effect=sqlite3.Error("Analytics DB Error")):
         analytics.generate_sales_report()
+
+
+def test_generate_sales_report_non_list_items(temp_db):
+    """Test sales report when decoded items data is not a list."""
+    conn = sqlite3.connect(temp_db)
+    cursor = conn.cursor()
+
+    # Valid JSON, but it decodes to a string instead of a list
+    cursor.execute(
+        "INSERT INTO bills (date, total_amount, items) VALUES (?, ?, ?)",
+        ("2026-06-04", 10.0, json.dumps("invalid-json-string")),
+    )
+
+    conn.commit()
+    conn.close()
+
+    analytics.generate_sales_report()
+
+
+def test_generate_sales_report_non_dict_item(temp_db):
+    """Test sales report when an item inside the list is not a dictionary."""
+    conn = sqlite3.connect(temp_db)
+    cursor = conn.cursor()
+
+    # Valid JSON list, but the item is a string instead of a dictionary
+    cursor.execute(
+        "INSERT INTO bills (date, total_amount, items) VALUES (?, ?, ?)",
+        ("2026-06-05", 10.0, json.dumps(["invalid-item"])),
+    )
+
+    conn.commit()
+    conn.close()
+
+    analytics.generate_sales_report()
